@@ -1,13 +1,5 @@
 module Rung
   class Base
-    class << self
-      attr_accessor :steps
-
-      def inherited(base)
-        base.steps = Steps.new
-      end
-    end
-
     extend StepsDSL
 
     def self.call(initial_state = {})

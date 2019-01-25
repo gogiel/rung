@@ -1,5 +1,9 @@
 module Rung
   module StepsDSL
+    def steps
+      @steps ||= Steps.new
+    end
+
     def step(reference = nil, &block)
       step = if block
         Step.new(block, pass_context: true)
