@@ -1,10 +1,10 @@
 module Rung
   class Wrapper
-    def initialize(wrapper, block)
+    def initialize(wrapper, inner_steps)
       @wrapper = wrapper
-      @block = block
+      @inner_steps = inner_steps
     end
 
-    attr_reader :wrapper, :block
+    attr_reader :wrapper, :inner_steps
   end
 end

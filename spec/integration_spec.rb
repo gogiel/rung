@@ -25,6 +25,14 @@ describe Rung do
       end
     end
 
+    let(:empty_wrapper) do
+      Class.new do
+        def self.call
+          yield
+        end
+      end
+    end
+
     let(:class_without_argument_spy) { spy }
     let(:class_without_argument) do
       Class.new do
@@ -48,6 +56,7 @@ describe Rung do
       proc_no_argument_spy = self.proc_no_argument_spy
       class_with_state_argument = self.class_with_state_argument
       class_without_argument = self.class_without_argument
+      empty_wrapper = self.empty_wrapper
 
       Class.new(Rung::Base) do
         def initialize(method_with_argument_spy, method_no_arguments_spy)
@@ -56,9 +65,13 @@ describe Rung do
         end
 
         step :test_method
-        step class_with_state_argument
-        step class_without_argument
-        step :test_method2
+        wrap empty_wrapper do
+          step class_with_state_argument
+          wrap empty_wrapper do
+            step class_without_argument
+            step :test_method2
+          end
+        end
         step do
           @anonymous_step1 = true
           block_no_arguments_spy.call
