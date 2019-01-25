@@ -1,9 +1,9 @@
 module Rung
   class Runner
-    def initialize(steps, initial_state, run_context)
+    def initialize(steps, initial_state, operation)
       @steps = steps
       @state = State.new initial_state
-      @run_context = run_context
+      @operation = operation
     end
 
     def call
@@ -35,7 +35,7 @@ module Rung
       runnable = to_runnable(step.operation)
 
       if step.pass_context
-        runnable.arity.zero? ? @run_context.instance_exec(&runnable) : @run_context.instance_exec(@state, &runnable)
+        runnable.arity.zero? ? @operation.instance_exec(&runnable) : @operation.instance_exec(@state, &runnable)
       else
         runnable.arity.zero? ? runnable.call : runnable.call(@state)
       end
@@ -44,13 +44,13 @@ module Rung
     def to_runnable(operation)
       case operation
       when Symbol, String
-        @run_context.method(operation)
+        @operation.method(operation)
       when Proc
         operation
       else
         operation.method(:call)
       end
-    rescue
+    rescue NameError
       operation
     end
   end

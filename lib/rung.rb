@@ -6,6 +6,7 @@ require 'rung/value_objects/step'
 require 'rung/value_objects/steps'
 require 'rung/value_objects/wrapper'
 
+require 'rung/dsl/operation_dsl'
 require 'rung/dsl/steps_dsl'
 require 'rung/dsl/wrapper_block_dsl'
 

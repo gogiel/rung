@@ -1,6 +1,7 @@
 module Rung
   class Base
     extend StepsDSL
+    extend OperationDSL
 
     def self.call(initial_state = {})
       new.call(initial_state)
