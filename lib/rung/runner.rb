@@ -1,26 +1,26 @@
 module Rung
   class Runner
-    def initialize(steps, initial_state, base_operation)
+    def initialize(steps_context, initial_state, base_operation)
       @context = RunContext.new(
-        steps: steps,
+        steps_context: steps_context,
         base_operation: base_operation,
         state: State.new(initial_state)
       )
     end
 
     extend Forwardable
-    def_delegators :@context, :steps, :base_operation, :state, :failed?, :success?, :fail!
+    def_delegators :@context, :steps_context, :base_operation, :state, :failed?, :success?, :fail!
 
     def call
-      run_success = iterate(steps)
+      run_success = iterate(steps_context)
 
       Result.new(run_success, state)
     end
 
     private
 
-    def iterate(steps)
-      steps.each do |step|
+    def iterate(steps_context)
+      steps_context.each_step do |step|
         step_result = case step
         when FailureStep
           call_runnable(step) if failed?

@@ -1,7 +1,7 @@
 module Rung
   module StepsDSL
-    def steps
-      @steps ||= Steps.new
+    def steps_context
+      @steps_context ||= StepsContext.new
     end
 
     def step(reference = nil, &block)
@@ -10,12 +10,12 @@ module Rung
       else
         Step.new(reference)
       end
-      steps.push(step)
+      steps_context.add_step(step)
     end
 
     def wrap(wrapper, &block)
       inner_steps = calculate_block_steps(&block)
-      steps.push(Wrapper.new(wrapper, inner_steps))
+      steps_context.add_step(Wrapper.new(wrapper, inner_steps))
     end
 
     def failure(reference = nil, &block)
@@ -24,19 +24,19 @@ module Rung
       else
         FailureStep.new(reference)
       end
-      steps.push(step)
+      steps_context.add_step(step)
     end
 
     private
 
     def calculate_block_steps(&block)
-      old_steps = @steps
+      old_steps_context = @steps_context
       begin
-        @steps = Steps.new
+        @steps_context = StepsContext.new
         instance_exec(&block)
-        @steps
+        @steps_context
       ensure
-        @steps = old_steps
+        @steps_context = old_steps_context
       end
     end
   end
