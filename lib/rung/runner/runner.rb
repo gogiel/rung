@@ -10,7 +10,8 @@ module Rung
       end
 
       extend Forwardable
-      def_delegators :@context, :steps_context, :operation_instance, :state, :failed?, :success?, :fail!
+      def_delegators :@context,
+        :steps_context, :operation_instance, :state, :failed?, :success?, :fail!
 
       def call
         run_success = iterate(steps_context)
@@ -41,34 +42,13 @@ module Rung
       end
 
       def call_wrapper(wrapper)
-        run_inner_steps = -> {
+        CallHelper.call(wrapper.wrapper, state, operation_instance) do
           iterate(wrapper.inner_steps)
-        }
-        runnable = to_runnable(wrapper.wrapper)
-        runnable.arity.zero? ? runnable.call(&run_inner_steps) : runnable.call(state, &run_inner_steps)
+        end
       end
 
       def call_runnable(step)
-        runnable = to_runnable(step.operation)
-
-        if step.pass_context
-          runnable.arity.zero? ? operation_instance.instance_exec(&runnable) : operation_instance.instance_exec(state, &runnable)
-        else
-          runnable.arity.zero? ? runnable.call : runnable.call(state)
-        end
-      end
-
-      def to_runnable(operation)
-        case operation
-        when Symbol, String
-          operation_instance.method(operation)
-        when Proc
-          operation
-        else
-          operation.method(:call)
-        end
-      rescue NameError
-        operation
+        CallHelper.call(step.operation, state, operation_instance, step.pass_context)
       end
     end
   end
