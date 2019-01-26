@@ -8,7 +8,6 @@ require 'rung/value_objects/wrapper'
 
 require 'rung/dsl/operation_dsl'
 require 'rung/dsl/steps_dsl'
-require 'rung/dsl/wrapper_block_dsl'
 
 require 'rung/runner'
 require 'rung/base'

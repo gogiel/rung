@@ -14,8 +14,19 @@ module Rung
     end
 
     def wrap(wrapper, &block)
-      inner_steps = WrapperBlockDSL.call(&block)
+      inner_steps = resolve_block_steps(&block)
       steps.push(Wrapper.new(wrapper, inner_steps))
+    end
+
+    def resolve_block_steps(&block)
+      old_steps = @steps
+      begin
+        @steps = Steps.new
+        instance_exec(&block)
+        @steps
+      ensure
+        @steps = old_steps
+      end
     end
   end
 end
