@@ -4,7 +4,7 @@ module Rung
       @context = RunContext.new(
         steps_context: steps_context,
         base_operation: base_operation,
-        state: State.new(initial_state)
+        state: RunState.new(initial_state)
       )
     end
 

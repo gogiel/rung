@@ -1,5 +1,5 @@
 module Rung
-  class State
+  class RunState
     def initialize(initial_state)
       @state = initial_state
     end
