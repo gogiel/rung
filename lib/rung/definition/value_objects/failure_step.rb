@@ -1,5 +1,7 @@
 module Rung
-  class FailureStep < Step
+  module Definition
+    class FailureStep < Step
 
+    end
   end
 end

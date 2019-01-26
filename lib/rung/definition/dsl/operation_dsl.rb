@@ -1,5 +1,7 @@
 module Rung
-  module OperationDSL
+  module Definition
+    module OperationDSL
 
+    end
   end
 end
