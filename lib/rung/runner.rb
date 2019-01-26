@@ -1,26 +1,42 @@
 module Rung
   class Runner
-    def initialize(steps, initial_state, operation)
-      @steps = steps
-      @state = State.new initial_state
-      @operation = operation
+    def initialize(steps, initial_state, base_operation)
+      @context = RunContext.new(
+        steps: steps,
+        base_operation: base_operation,
+        state: State.new(initial_state)
+      )
     end
 
-    def call
-      run_success = iterate(@steps)
+    extend Forwardable
+    def_delegators :@context, :steps, :base_operation, :state, :failed?, :success?, :fail!
 
-      Result.new(run_success, @state)
+    def call
+      run_success = iterate(steps)
+
+      Result.new(run_success, state)
     end
 
     private
 
     def iterate(steps)
       steps.each do |step|
-        step_result = step.is_a?(Wrapper) ? call_wrapper(step) : call_runnable(step)
-        return false unless step_result
+        step_result = case step
+        when FailureStep
+          call_runnable(step) if failed?
+          true
+        when Step
+          success? ? call_runnable(step) : true
+        when Wrapper
+          call_wrapper(step)
+        else
+          raise Error, "Unexpected Step: #{step}"
+        end
+
+        fail! unless step_result
       end
 
-      true
+      success?
     end
 
     def call_wrapper(wrapper)
@@ -28,23 +44,23 @@ module Rung
         iterate(wrapper.inner_steps)
       }
       runnable = to_runnable(wrapper.wrapper)
-      runnable.arity.zero? ? runnable.call(&run_inner_steps) : runnable.call(@state, &run_inner_steps)
+      runnable.arity.zero? ? runnable.call(&run_inner_steps) : runnable.call(state, &run_inner_steps)
     end
 
     def call_runnable(step)
       runnable = to_runnable(step.operation)
 
       if step.pass_context
-        runnable.arity.zero? ? @operation.instance_exec(&runnable) : @operation.instance_exec(@state, &runnable)
+        runnable.arity.zero? ? base_operation.instance_exec(&runnable) : base_operation.instance_exec(state, &runnable)
       else
-        runnable.arity.zero? ? runnable.call : runnable.call(@state)
+        runnable.arity.zero? ? runnable.call : runnable.call(state)
       end
     end
 
     def to_runnable(operation)
       case operation
       when Symbol, String
-        @operation.method(operation)
+        base_operation.method(operation)
       when Proc
         operation
       else

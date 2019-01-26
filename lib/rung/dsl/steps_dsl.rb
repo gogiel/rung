@@ -14,11 +14,22 @@ module Rung
     end
 
     def wrap(wrapper, &block)
-      inner_steps = resolve_block_steps(&block)
+      inner_steps = calculate_block_steps(&block)
       steps.push(Wrapper.new(wrapper, inner_steps))
     end
 
-    def resolve_block_steps(&block)
+    def failure(reference = nil, &block)
+      step = if block
+        FailureStep.new(block, pass_context: true)
+      else
+        FailureStep.new(reference)
+      end
+      steps.push(step)
+    end
+
+    private
+
+    def calculate_block_steps(&block)
       old_steps = @steps
       begin
         @steps = Steps.new

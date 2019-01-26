@@ -47,6 +47,8 @@ describe Rung do
       end
     end
 
+    let(:failure_spy) { spy }
+
     let(:test_class) do
       block_no_arguments_spy = self.block_no_arguments_spy
       block_with_arguments_spy = self.block_with_arguments_spy
@@ -55,6 +57,7 @@ describe Rung do
       class_with_state_argument = self.class_with_state_argument
       class_without_argument = self.class_without_argument
       empty_wrapper = self.empty_wrapper
+      failure_spy = self.failure_spy
 
       Class.new(Rung::Base) do
         def initialize(method_with_argument_spy, method_no_arguments_spy)
@@ -81,6 +84,7 @@ describe Rung do
         end
         step proc_with_one_argument_spy
         step proc_no_argument_spy
+        failure failure_spy
 
         def test_method(state)
           state[:test_method] = true
@@ -129,6 +133,10 @@ describe Rung do
 
       it "provides state for test methods" do
         expect(result.state[:test_method]).to eq true
+      end
+
+      it "doesn't execute failure step" do
+        expect(failure_spy).not_to have_received(:call)
       end
     end
 
