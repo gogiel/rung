@@ -1,13 +1,13 @@
 module Rung
   class RunContext
-    def initialize(steps_context:, base_operation:, state:)
+    def initialize(steps_context:, operation_instance:, state:)
       @steps_context = steps_context
-      @base_operation = base_operation
+      @operation_instance = operation_instance
       @state = state
       @failed = false
     end
 
-    attr_reader :steps_context, :base_operation, :state
+    attr_reader :steps_context, :operation_instance, :state
 
     def fail!
       @failed = true

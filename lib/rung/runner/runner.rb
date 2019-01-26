@@ -1,15 +1,15 @@
 module Rung
   class Runner
-    def initialize(steps_context, initial_state, base_operation)
+    def initialize(steps_context, initial_state, operation_instance)
       @context = RunContext.new(
         steps_context: steps_context,
-        base_operation: base_operation,
+        operation_instance: operation_instance,
         state: RunState.new(initial_state)
       )
     end
 
     extend Forwardable
-    def_delegators :@context, :steps_context, :base_operation, :state, :failed?, :success?, :fail!
+    def_delegators :@context, :steps_context, :operation_instance, :state, :failed?, :success?, :fail!
 
     def call
       run_success = iterate(steps_context)
@@ -51,7 +51,7 @@ module Rung
       runnable = to_runnable(step.operation)
 
       if step.pass_context
-        runnable.arity.zero? ? base_operation.instance_exec(&runnable) : base_operation.instance_exec(state, &runnable)
+        runnable.arity.zero? ? operation_instance.instance_exec(&runnable) : operation_instance.instance_exec(state, &runnable)
       else
         runnable.arity.zero? ? runnable.call : runnable.call(state)
       end
@@ -60,7 +60,7 @@ module Rung
     def to_runnable(operation)
       case operation
       when Symbol, String
-        base_operation.method(operation)
+        operation_instance.method(operation)
       when Proc
         operation
       else
