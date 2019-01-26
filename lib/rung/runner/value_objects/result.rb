@@ -14,6 +14,10 @@ module Rung
         !success?
       end
 
+      def [](key)
+        state[key]
+      end
+
       attr_reader :state
     end
   end

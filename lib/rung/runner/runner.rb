@@ -25,10 +25,10 @@ module Rung
         steps_context.each_step do |step|
           step_result = case step
           when Definition::FailureStep
-            call_runnable(step) if failed?
+            call_step(step) if failed?
             true
           when Definition::Step
-            success? ? call_runnable(step) : true
+            success? ? call_step(step) : true
           when Definition::Wrapper
             call_wrapper(step)
           else
@@ -47,7 +47,7 @@ module Rung
         end
       end
 
-      def call_runnable(step)
+      def call_step(step)
         CallHelper.call(step.operation, state, operation_instance, step.pass_context)
       end
     end

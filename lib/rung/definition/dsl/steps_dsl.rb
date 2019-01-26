@@ -31,14 +31,18 @@ module Rung
       private
 
       def calculate_block_steps(&block)
-        old_steps_context = @steps_context
-        begin
-          @steps_context = StepsContext.new
+        with_temporary_context do
           instance_exec(&block)
-          @steps_context
-        ensure
-          @steps_context = old_steps_context
+          steps_context
         end
+      end
+
+      def with_temporary_context
+        old_steps_context = @steps_context
+        @steps_context = StepsContext.new
+        yield
+      ensure
+        @steps_context = old_steps_context
       end
     end
   end
