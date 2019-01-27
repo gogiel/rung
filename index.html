@@ -452,6 +452,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
        <li><a href="#_contributing">Contributing</a></li> 
        <li><a href="#_license">License</a></li> 
       </ul> </li> 
+     <li><a href="#State"><strong>State</strong></a> 
+      <ul class="sectlevel2"> 
+       <li><a href="#_state_is_shared_across_step_executions">State is shared across step executions</a></li> 
+       <li><a href="#_state_is_available_in_the_result_object">State is available in the result object</a></li> 
+       <li><a href="#_initial_state_can_be_passed_to_call_method">Initial state can be passed to call method</a></li> 
+      </ul> </li> 
      <li><a href="#Steps-definition"><strong>Steps definition</strong></a> 
       <ul class="sectlevel2"> 
        <li><a href="#_steps_can_be_defined_as_a_ruby_block">Steps can be defined as a Ruby block</a></li> 
@@ -463,12 +469,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
        <li><a href="#_when_all_steps_return_truthy_value_the_result_is_a_success">When all steps return truthy value the result is a success</a></li> 
        <li><a href="#_when_at_least_one_step_returns_a_falsy_value_then_the_result_is_a_failure">When at least one step returns a falsy value then the result is a failure</a></li> 
        <li><a href="#_when_a_step_fails_then_the_next_steps_are_not_executed">When a step fails then the next steps are not executed</a></li> 
-      </ul> </li> 
-     <li><a href="#State"><strong>State</strong></a> 
-      <ul class="sectlevel2"> 
-       <li><a href="#_state_is_shared_across_step_executions">State is shared across step executions</a></li> 
-       <li><a href="#_state_is_available_in_the_result_object">State is available in the result object</a></li> 
-       <li><a href="#_initial_state_can_be_passed_to_call_method">Initial state can be passed to call method</a></li> 
       </ul> </li> 
     </ul> 
    </div> 
@@ -592,6 +592,193 @@ end</code></pre>
       <h3 id="_license"><a class="anchor" href="#_license"></a>License</h3> 
       <div class="paragraph"> 
        <p>The gem is available as open source under the terms of the<br> <a href="https://opensource.org/licenses/MIT">MIT License</a>.</p> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
+    <h2 id="State"><a class="anchor" href="#State"></a><strong>State</strong></h2> 
+    <div class="sectionbody"> 
+     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('State');document.getElementById('hidden-State').style.display = 'inline';this.style.display = 'none'"> </span> 
+     <span id="hidden-State" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('State');this.style.display = 'none'"> </span> 
+     <div class="sect2"> 
+      <h3 id="_state_is_shared_across_step_executions"><a class="anchor" href="#_state_is_shared_across_step_executions"></a>State is shared across step executions</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step do |state|
+    state[:what] = "World!"
+  end
+
+  step do
+    print_to_output "Hello "
+  end
+
+  step do |state|
+    print_to_output state[:what]
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello World!</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_state_is_available_in_the_result_object"><a class="anchor" href="#_state_is_available_in_the_result_object"></a>State is available in the result object</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step do |state|
+    state[:output_text] = "Hello "
+  end
+
+  step do |state|
+    state[:output_text] &lt;&lt; "World!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result = Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result[:output_text] == "Hello World!"</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_initial_state_can_be_passed_to_call_method"><a class="anchor" href="#_initial_state_can_be_passed_to_call_method"></a>Initial state can be passed to call method</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step do |state|
+    state[:output_text] &lt;&lt; "World!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result = Operation.new.call(output_text: "Hello ")</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result[:output_text] == "Hello World!"</pre> 
+         </div> 
+        </div> 
+       </div> 
       </div> 
      </div> 
     </div> 
@@ -1068,198 +1255,11 @@ end</pre>
      </div> 
     </div> 
    </div> 
-   <div class="sect1"> 
-    <h2 id="State"><a class="anchor" href="#State"></a><strong>State</strong></h2> 
-    <div class="sectionbody"> 
-     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('State');document.getElementById('hidden-State').style.display = 'inline';this.style.display = 'none'"> </span> 
-     <span id="hidden-State" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('State');this.style.display = 'none'"> </span> 
-     <div class="sect2"> 
-      <h3 id="_state_is_shared_across_step_executions"><a class="anchor" href="#_state_is_shared_across_step_executions"></a>State is shared across step executions</h3> 
-      <div class="exampleblock"> 
-       <div class="content"> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Given 
-          </dt> 
-          <dd> 
-           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
-  step do |state|
-    state[:what] = "World!"
-  end
-
-  step do
-    print_to_output "Hello "
-  end
-
-  step do |state|
-    print_to_output state[:what]
-  end
-end</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            When 
-          </dt> 
-          <dd> 
-           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>Operation.new.call</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Then 
-          </dt> 
-          <dd> 
-           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>Hello World!</pre> 
-         </div> 
-        </div> 
-       </div> 
-      </div> 
-     </div> 
-     <div class="sect2"> 
-      <h3 id="_state_is_available_in_the_result_object"><a class="anchor" href="#_state_is_available_in_the_result_object"></a>State is available in the result object</h3> 
-      <div class="exampleblock"> 
-       <div class="content"> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Given 
-          </dt> 
-          <dd> 
-           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
-  step do |state|
-    state[:output_text] = "Hello "
-  end
-
-  step do |state|
-    state[:output_text] &lt;&lt; "World!"
-  end
-end</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            When 
-          </dt> 
-          <dd> 
-           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>@result = Operation.new.call</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Then 
-          </dt> 
-          <dd> 
-           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>@result[:output_text] == "Hello World!"</pre> 
-         </div> 
-        </div> 
-       </div> 
-      </div> 
-     </div> 
-     <div class="sect2"> 
-      <h3 id="_initial_state_can_be_passed_to_call_method"><a class="anchor" href="#_initial_state_can_be_passed_to_call_method"></a>Initial state can be passed to call method</h3> 
-      <div class="exampleblock"> 
-       <div class="content"> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Given 
-          </dt> 
-          <dd> 
-           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
-  step do |state|
-    state[:output_text] &lt;&lt; "World!"
-  end
-end</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            When 
-          </dt> 
-          <dd> 
-           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>@result = Operation.new.call(output_text: "Hello ")</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Then 
-          </dt> 
-          <dd> 
-           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>@result[:output_text] == "Hello World!"</pre> 
-         </div> 
-        </div> 
-       </div> 
-      </div> 
-     </div> 
-    </div> 
-   </div> 
   </div> 
   <div id="footer" style="color:gray;font-size:11px">
     Generated by 
-   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 27, 2019, 9:16:10 PM 
-   <span style="float:right;font-size:11px"> Execution time: 2.924 seconds</span> 
+   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 27, 2019, 10:46:06 PM 
+   <span style="float:right;font-size:11px"> Execution time: 3.648 seconds</span> 
   </div> 
   <style>  
 

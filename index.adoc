@@ -19,6 +19,114 @@
 include::/home/circleci/project/target/cukedoctor-intro.adoc[leveloffset=+1]
 
 
+[[State, State]]
+== *State*
+
+ifndef::backend-pdf[]
+minmax::State[]
+endif::[]
+=== State is shared across step executions
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do |state|
+    state[:what] = "World!"
+  end
+
+  step do
+    print_to_output "Hello "
+  end
+
+  step do |state|
+    print_to_output state[:what]
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+Operation.new.call
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+Hello World!
+
+----
+==========
+
+=== State is available in the result object
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do |state|
+    state[:output_text] = "Hello "
+  end
+
+  step do |state|
+    state[:output_text] << "World!"
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.new.call
+
+----
+Then ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result[:output_text] == "Hello World!"
+
+----
+==========
+
+=== Initial state can be passed to call method
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do |state|
+    state[:output_text] << "World!"
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.new.call(output_text: "Hello ")
+
+----
+Then ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result[:output_text] == "Hello World!"
+
+----
+==========
+
 [[Steps-definition, Steps definition]]
 == *Steps definition*
 
@@ -309,114 +417,6 @@ I see output icon:thumbs-up[role="green",title="Passed"]
 ----
 
 Hello
-
-----
-==========
-
-[[State, State]]
-== *State*
-
-ifndef::backend-pdf[]
-minmax::State[]
-endif::[]
-=== State is shared across step executions
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Base
-  step do |state|
-    state[:what] = "World!"
-  end
-
-  step do
-    print_to_output "Hello "
-  end
-
-  step do |state|
-    print_to_output state[:what]
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-Operation.new.call
-
-----
-Then ::
-I see output icon:thumbs-up[role="green",title="Passed"]
-----
-
-Hello World!
-
-----
-==========
-
-=== State is available in the result object
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Base
-  step do |state|
-    state[:output_text] = "Hello "
-  end
-
-  step do |state|
-    state[:output_text] << "World!"
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result = Operation.new.call
-
-----
-Then ::
-I can assure that icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result[:output_text] == "Hello World!"
-
-----
-==========
-
-=== Initial state can be passed to call method
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Base
-  step do |state|
-    state[:output_text] << "World!"
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result = Operation.new.call(output_text: "Hello ")
-
-----
-Then ::
-I can assure that icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result[:output_text] == "Hello World!"
 
 ----
 ==========
