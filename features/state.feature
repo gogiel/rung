@@ -1,4 +1,5 @@
-Feature: state
+# order: 3
+Feature: State
 
   Scenario: State is shared across step executions
     Given definition

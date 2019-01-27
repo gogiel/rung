@@ -1,4 +1,5 @@
-Feature: failure
+# order: 2
+Feature: Success and failure
   Operation call returns `Rung::Runner::Result` object that can be either a success or a failure.
   Result has `success?` and `failure?` methods.
 
