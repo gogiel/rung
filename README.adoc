@@ -79,6 +79,10 @@ Docs are available at https://gogiel.github.io/rung/.
 They are generated from Cucumber specifications using
 https://github.com/rmpestano/cukedoctor[Cukedoctor].
 
+== Docs locally
+
+Docs can be generated locally using `$ rake docker_generate_docs`. It requires Docker.
+
 == Development
 
 After checking out the repo, run `bundle` to install dependencies. Then,
