@@ -1,8 +1,6 @@
 # Rung
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rung`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Rung is service object/business operation/Railway DSL, inspired by [Trailblazer Operation](http://trailblazer.to/gems/operation).
 
 ## Installation
 
@@ -22,17 +20,59 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Example:
+```ruby
+class CreateOrder < Rung::Base
+  step do |state|
+    state[:order_id] = "order-#{SecureRandom.uuid }" 
+  end
+  step ValidateMagazineState
+  step :log_start
+  
+  wrap WithBenchmark do
+    step CreateTemporaryOrder
+    step :place_order
+  end
+  
+  step :log_success
+  failure :log_failure
+  
+  def log_start(state)
+    state[:logger].log("Creating order #{state[:order_id]}")
+  end
+  
+  def log_success(state)
+    state[:logger].log("Order #{state[:order_id]} created successfully")
+  end
+  
+  def log_failure(state)
+    state[:logger].log("Order #{state[:order_id]} not created")
+  end
+  
+  def place_order(state)
+    status = OrdersRepository.create(state[:order_id])
+    
+    # Step return value is important.
+    # If step returns falsy value then the operation is considered as a failure.
+    status == :success
+  end
+end
+
+result = CreateOrder.call(logger: Rails.logger)
+if result.success?
+  print "Created order #{result[:order_id]}"
+end
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bundle` to install dependencies. Then, run `rake` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rung.
+Bug reports and pull requests are welcome on GitHub.
 
 ## License
 
