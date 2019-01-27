@@ -60,12 +60,6 @@ workflows:
       - build_docs:
           requires:
             - build
-          filters:
-            branches:
-              only: master
       - deploy_docs:
           requires:
             - build_docs
-          filters:
-            branches:
-              only: master
