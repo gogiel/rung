@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rung (0.1.0)
+    rung (0.0.1.pre.alpha)
 
 GEM
   remote: https://rubygems.org/

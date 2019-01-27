@@ -1,3 +1,5 @@
+require 'forwardable'
+
 require 'rung/version'
 require 'rung/error'
 
