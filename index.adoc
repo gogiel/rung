@@ -351,7 +351,7 @@ end
 
 ----
 When ::
-I run icon:thumbs-up[role="green",title="Passed"] [small right]#(002ms)#
+I run icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
 ----
 
 Operation.new.call
@@ -370,7 +370,7 @@ Hello World!
 
 ==========
 Given ::
-definition icon:thumbs-up[role="green",title="Passed"] [small right]#(001ms)#
+definition icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
 ----
 
 class SetWhatState
