@@ -1,6 +1,6 @@
 :toc: right
 :backend: html5
-:doctitle: Living Documentation
+:doctitle: Rung Documentation
 :doctype: book
 :icons: font
 :!numbered:
@@ -14,13 +14,11 @@
 :chapter-label: Chapter
 :version-label: Version
 
-= *Living Documentation*
+= *Rung Documentation*
 
-
-== *Features*
 
 [[failure, failure]]
-=== *failure*
+== *failure*
 
 ifndef::backend-pdf[]
 minmax::failure[]
@@ -30,11 +28,11 @@ Operation call returns `Rung::Runner::Result` object that can be either a succes
   Result has `success?` and `failure?` methods.
 ****
 
-==== Scenario: When all steps return truthy value the result is a success
+=== When all steps return truthy value the result is a success
 
 ==========
 Given ::
-definition icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
 class Operation < Rung::Base
@@ -52,21 +50,21 @@ end
 
 ----
 When ::
-I run icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I run icon:thumbs-up[role="green",title="Passed"]
 ----
 
 @result = Operation.new.call
 
 ----
 Then ::
-I can assure that icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I can assure that icon:thumbs-up[role="green",title="Passed"]
 ----
 
 @result.success? == true
 
 ----
 And ::
-I can assure that icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I can assure that icon:thumbs-up[role="green",title="Passed"]
 ----
 
 @result.failure? == false
@@ -74,11 +72,11 @@ I can assure that icon:thumbs-up[role="green",title="Passed"] [small right]#(000
 ----
 ==========
 
-==== Scenario: When at least one step returns a falsy value then the result is a failure
+=== When at least one step returns a falsy value then the result is a failure
 
 ==========
 Given ::
-definition icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
 class Operation < Rung::Base
@@ -96,21 +94,21 @@ end
 
 ----
 When ::
-I run icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I run icon:thumbs-up[role="green",title="Passed"]
 ----
 
 @result = Operation.new.call
 
 ----
 Then ::
-I can assure that icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I can assure that icon:thumbs-up[role="green",title="Passed"]
 ----
 
 @result.success? == false
 
 ----
 And ::
-I can assure that icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I can assure that icon:thumbs-up[role="green",title="Passed"]
 ----
 
 @result.failure? == true
@@ -118,11 +116,11 @@ I can assure that icon:thumbs-up[role="green",title="Passed"] [small right]#(000
 ----
 ==========
 
-==== Scenario: When a step fails then the next steps are not executed
+=== When a step fails then the next steps are not executed
 
 ==========
 Given ::
-definition icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
 class Operation < Rung::Base
@@ -143,14 +141,14 @@ end
 
 ----
 When ::
-I run icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I run icon:thumbs-up[role="green",title="Passed"]
 ----
 
 Operation.new.call
 
 ----
 Then ::
-I see output icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I see output icon:thumbs-up[role="green",title="Passed"]
 ----
 
 Hello
@@ -159,16 +157,16 @@ Hello
 ==========
 
 [[state, state]]
-=== *state*
+== *state*
 
 ifndef::backend-pdf[]
 minmax::state[]
 endif::[]
-==== Scenario: State is shared across step executions
+=== State is shared across step executions
 
 ==========
 Given ::
-definition icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
 class Operation < Rung::Base
@@ -187,14 +185,14 @@ end
 
 ----
 When ::
-I run icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I run icon:thumbs-up[role="green",title="Passed"]
 ----
 
 Operation.new.call
 
 ----
 Then ::
-I see output icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I see output icon:thumbs-up[role="green",title="Passed"]
 ----
 
 Hello World!
@@ -202,11 +200,11 @@ Hello World!
 ----
 ==========
 
-==== Scenario: State is available in the result object
+=== State is available in the result object
 
 ==========
 Given ::
-definition icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
 class Operation < Rung::Base
@@ -221,14 +219,14 @@ end
 
 ----
 When ::
-I run icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I run icon:thumbs-up[role="green",title="Passed"]
 ----
 
 @result = Operation.new.call
 
 ----
 Then ::
-I can assure that icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I can assure that icon:thumbs-up[role="green",title="Passed"]
 ----
 
 @result[:output_text] == "Hello World!"
@@ -236,11 +234,11 @@ I can assure that icon:thumbs-up[role="green",title="Passed"] [small right]#(000
 ----
 ==========
 
-==== Scenario: Initial state can be passed to call method
+=== Initial state can be passed to call method
 
 ==========
 Given ::
-definition icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
 class Operation < Rung::Base
@@ -251,14 +249,14 @@ end
 
 ----
 When ::
-I run icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I run icon:thumbs-up[role="green",title="Passed"]
 ----
 
 @result = Operation.new.call(output_text: "Hello ")
 
 ----
 Then ::
-I can assure that icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I can assure that icon:thumbs-up[role="green",title="Passed"]
 ----
 
 @result[:output_text] == "Hello World!"
@@ -267,7 +265,7 @@ I can assure that icon:thumbs-up[role="green",title="Passed"] [small right]#(000
 ==========
 
 [[steps_definition, steps_definition]]
-=== *steps_definition*
+== *steps_definition*
 
 ifndef::backend-pdf[]
 minmax::steps_definition[]
@@ -277,11 +275,11 @@ There are multiple ways of defining steps.
   Steps definition order is important as they are always executed in order.
 ****
 
-==== Scenario: Steps can be defined as a Ruby block
+=== Steps can be defined as a Ruby block
 
 ==========
 Given ::
-definition icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
 class Operation < Rung::Base
@@ -304,14 +302,14 @@ end
 
 ----
 When ::
-I run icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I run icon:thumbs-up[role="green",title="Passed"]
 ----
 
 Operation.new.call
 
 ----
 Then ::
-I see output icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I see output icon:thumbs-up[role="green",title="Passed"]
 ----
 
 Hello World!
@@ -319,11 +317,11 @@ Hello World!
 ----
 ==========
 
-==== Scenario: Steps can be defined as methods
+=== Steps can be defined as methods
 
 ==========
 Given ::
-definition icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
 class Operation < Rung::Base
@@ -351,14 +349,14 @@ end
 
 ----
 When ::
-I run icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I run icon:thumbs-up[role="green",title="Passed"]
 ----
 
 Operation.new.call
 
 ----
 Then ::
-I see output icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I see output icon:thumbs-up[role="green",title="Passed"]
 ----
 
 Hello World!
@@ -366,11 +364,11 @@ Hello World!
 ----
 ==========
 
-==== Scenario: Steps can be defined as any objects with call method
+=== Steps can be defined as any objects with call method
 
 ==========
 Given ::
-definition icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
 class SetWhatState
@@ -406,14 +404,14 @@ end
 
 ----
 When ::
-I run icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I run icon:thumbs-up[role="green",title="Passed"]
 ----
 
 Operation.new.call
 
 ----
 Then ::
-I see output icon:thumbs-up[role="green",title="Passed"] [small right]#(000ms)#
+I see output icon:thumbs-up[role="green",title="Passed"]
 ----
 
 Hello World!
