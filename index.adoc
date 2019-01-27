@@ -16,6 +16,8 @@
 
 = *Rung Documentation*
 
+include::/home/circleci/project/target/cukedoctor-intro.adoc[leveloffset=+1]
+
 
 [[Steps-definition, Steps definition]]
 == *Steps definition*
