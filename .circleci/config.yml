@@ -24,7 +24,7 @@ jobs:
           at: /tmp/workspace
       - run: wget https://bintray.com/artifact/download/rmpestano/cukedoctor/com/github/cukedoctor/cukedoctor-main/1.2.1/cukedoctor-main-1.2.1.jar
       - run: mkdir /tmp/workspace/generated_doc
-      - run: java -jar cukedoctor-main-1.2.1.jar -f html5 -p /tmp/workspace/cucumber.json -o /tmp/workspace/generated_doc/index -hideSummarySection -documentTitle "Rung Documentation" -hideStepTime
+      - run: java -jar cukedoctor-main-1.2.1.jar -f html5 -p /tmp/workspace/cucumber.json -o /tmp/workspace/generated_doc/index -hideSummarySection -t "Rung Documentation" -hideStepTime -hideScenarioKeyword -hideFeaturesSection
       - persist_to_workspace:
           root: /tmp/workspace/
           paths:
