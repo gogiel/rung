@@ -18,3 +18,30 @@ jobs:
 
       - run: bundle exec rspec
       - run: bundle exec cucumber
+
+      - run: mkdir workspace
+      - run: bundle exec cucumber -f json -o workspace/cucumber.json
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - cucumber.json
+
+  build_docs:
+    docker:
+      - image: circleci/openjdk:11-jdk-browsers
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: wget https://bintray.com/artifact/download/rmpestano/cukedoctor/com/github/cukedoctor/cukedoctor-main/1.2.1/cukedoctor-main-1.2.1.jar
+      - run: mkdir /tmp/generated_doc
+      - run: java -jar cukedoctor-main-1.2.1.jar -f html5 -p /tmp/workspace/cucumber.json -o /tmp/generated_doc -hideSummarySection
+
+workflows:
+  version: 2
+
+  btd:
+    jobs:
+      - build
+      - build_docs:
+          requires:
+            - build
