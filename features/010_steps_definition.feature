@@ -1,4 +1,3 @@
-# order: 1
 Feature: Steps definition
   There are multiple ways of defining steps.
   Steps definition order is important as they are always executed in order.
