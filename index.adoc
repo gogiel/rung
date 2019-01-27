@@ -17,258 +17,11 @@
 = *Rung Documentation*
 
 
-[[failure, failure]]
-== *failure*
+[[Steps-definition, Steps definition]]
+== *Steps definition*
 
 ifndef::backend-pdf[]
-minmax::failure[]
-endif::[]
-****
-Operation call returns `Rung::Runner::Result` object that can be either a success or a failure.
-  Result has `success?` and `failure?` methods.
-****
-
-=== When all steps return truthy value the result is a success
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Base
-  step do
-    # do something...
-    true
-  end
-
-  step :second_step
-
-  def second_step
-    2 + 2
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result = Operation.new.call
-
-----
-Then ::
-I can assure that icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result.success? == true
-
-----
-And ::
-I can assure that icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result.failure? == false
-
-----
-==========
-
-=== When at least one step returns a falsy value then the result is a failure
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Base
-  step do
-    # do something...
-    true
-  end
-
-  step :second_step
-
-  def second_step
-    nil
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result = Operation.new.call
-
-----
-Then ::
-I can assure that icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result.success? == false
-
-----
-And ::
-I can assure that icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result.failure? == true
-
-----
-==========
-
-=== When a step fails then the next steps are not executed
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Base
-  step do
-    print_to_output "Hello"
-    true
-  end
-
-  step do
-    # something went wrong, retuning false
-    false
-  end
-
-  step do
-    print_to_output "World"
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-Operation.new.call
-
-----
-Then ::
-I see output icon:thumbs-up[role="green",title="Passed"]
-----
-
-Hello
-
-----
-==========
-
-[[state, state]]
-== *state*
-
-ifndef::backend-pdf[]
-minmax::state[]
-endif::[]
-=== State is shared across step executions
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Base
-  step do |state|
-    state[:what] = "World!"
-  end
-
-  step do
-    print_to_output "Hello "
-  end
-
-  step do |state|
-    print_to_output state[:what]
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-Operation.new.call
-
-----
-Then ::
-I see output icon:thumbs-up[role="green",title="Passed"]
-----
-
-Hello World!
-
-----
-==========
-
-=== State is available in the result object
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Base
-  step do |state|
-    state[:output_text] = "Hello "
-  end
-
-  step do |state|
-    state[:output_text] << "World!"
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result = Operation.new.call
-
-----
-Then ::
-I can assure that icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result[:output_text] == "Hello World!"
-
-----
-==========
-
-=== Initial state can be passed to call method
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Base
-  step do |state|
-    state[:output_text] << "World!"
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result = Operation.new.call(output_text: "Hello ")
-
-----
-Then ::
-I can assure that icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result[:output_text] == "Hello World!"
-
-----
-==========
-
-[[steps_definition, steps_definition]]
-== *steps_definition*
-
-ifndef::backend-pdf[]
-minmax::steps_definition[]
+minmax::Steps-definition[]
 endif::[]
 ****
 There are multiple ways of defining steps.
@@ -415,6 +168,253 @@ I see output icon:thumbs-up[role="green",title="Passed"]
 ----
 
 Hello World!
+
+----
+==========
+
+[[Success-and-failure, Success and failure]]
+== *Success and failure*
+
+ifndef::backend-pdf[]
+minmax::Success-and-failure[]
+endif::[]
+****
+Operation call returns `Rung::Runner::Result` object that can be either a success or a failure.
+  Result has `success?` and `failure?` methods.
+****
+
+=== When all steps return truthy value the result is a success
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do
+    # do something...
+    true
+  end
+
+  step :second_step
+
+  def second_step
+    2 + 2
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.new.call
+
+----
+Then ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.success? == true
+
+----
+And ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.failure? == false
+
+----
+==========
+
+=== When at least one step returns a falsy value then the result is a failure
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do
+    # do something...
+    true
+  end
+
+  step :second_step
+
+  def second_step
+    nil
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.new.call
+
+----
+Then ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.success? == false
+
+----
+And ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.failure? == true
+
+----
+==========
+
+=== When a step fails then the next steps are not executed
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do
+    print_to_output "Hello"
+    true
+  end
+
+  step do
+    # something went wrong, retuning false
+    false
+  end
+
+  step do
+    print_to_output "World"
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+Operation.new.call
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+Hello
+
+----
+==========
+
+[[State, State]]
+== *State*
+
+ifndef::backend-pdf[]
+minmax::State[]
+endif::[]
+=== State is shared across step executions
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do |state|
+    state[:what] = "World!"
+  end
+
+  step do
+    print_to_output "Hello "
+  end
+
+  step do |state|
+    print_to_output state[:what]
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+Operation.new.call
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+Hello World!
+
+----
+==========
+
+=== State is available in the result object
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do |state|
+    state[:output_text] = "Hello "
+  end
+
+  step do |state|
+    state[:output_text] << "World!"
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.new.call
+
+----
+Then ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result[:output_text] == "Hello World!"
+
+----
+==========
+
+=== Initial state can be passed to call method
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do |state|
+    state[:output_text] << "World!"
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.new.call(output_text: "Hello ")
+
+----
+Then ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result[:output_text] == "Hello World!"
 
 ----
 ==========

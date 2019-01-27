@@ -438,23 +438,23 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
       Table of Contents 
     </div> 
     <ul class="sectlevel1"> 
-     <li><a href="#failure"><strong>failure</strong></a> 
+     <li><a href="#Steps-definition"><strong>Steps definition</strong></a> 
+      <ul class="sectlevel2"> 
+       <li><a href="#_steps_can_be_defined_as_a_ruby_block">Steps can be defined as a Ruby block</a></li> 
+       <li><a href="#_steps_can_be_defined_as_methods">Steps can be defined as methods</a></li> 
+       <li><a href="#_steps_can_be_defined_as_any_objects_with_call_method">Steps can be defined as any objects with call method</a></li> 
+      </ul> </li> 
+     <li><a href="#Success-and-failure"><strong>Success and failure</strong></a> 
       <ul class="sectlevel2"> 
        <li><a href="#_when_all_steps_return_truthy_value_the_result_is_a_success">When all steps return truthy value the result is a success</a></li> 
        <li><a href="#_when_at_least_one_step_returns_a_falsy_value_then_the_result_is_a_failure">When at least one step returns a falsy value then the result is a failure</a></li> 
        <li><a href="#_when_a_step_fails_then_the_next_steps_are_not_executed">When a step fails then the next steps are not executed</a></li> 
       </ul> </li> 
-     <li><a href="#state"><strong>state</strong></a> 
+     <li><a href="#State"><strong>State</strong></a> 
       <ul class="sectlevel2"> 
        <li><a href="#_state_is_shared_across_step_executions">State is shared across step executions</a></li> 
        <li><a href="#_state_is_available_in_the_result_object">State is available in the result object</a></li> 
        <li><a href="#_initial_state_can_be_passed_to_call_method">Initial state can be passed to call method</a></li> 
-      </ul> </li> 
-     <li><a href="#steps_definition"><strong>steps_definition</strong></a> 
-      <ul class="sectlevel2"> 
-       <li><a href="#_steps_can_be_defined_as_a_ruby_block">Steps can be defined as a Ruby block</a></li> 
-       <li><a href="#_steps_can_be_defined_as_methods">Steps can be defined as methods</a></li> 
-       <li><a href="#_steps_can_be_defined_as_any_objects_with_call_method">Steps can be defined as any objects with call method</a></li> 
       </ul> </li> 
     </ul> 
    </div> 
@@ -462,10 +462,246 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
   <div id="content"> 
    <span style="float:right"> <input value="Filter..." onclick="this.value=''" title="Filter features by title" onblur="searchFeature(this.value);"> </span> 
    <div class="sect1"> 
-    <h2 id="failure"><a class="anchor" href="#failure"></a><strong>failure</strong></h2> 
+    <h2 id="Steps-definition"><a class="anchor" href="#Steps-definition"></a><strong>Steps definition</strong></h2> 
     <div class="sectionbody"> 
-     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('failure');document.getElementById('hidden-failure').style.display = 'inline';this.style.display = 'none'"> </span> 
-     <span id="hidden-failure" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('failure');this.style.display = 'none'"> </span> 
+     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('Steps-definition');document.getElementById('hidden-Steps-definition').style.display = 'inline';this.style.display = 'none'"> </span> 
+     <span id="hidden-Steps-definition" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('Steps-definition');this.style.display = 'none'"> </span> 
+     <div class="sidebarblock"> 
+      <div class="content"> 
+       <div class="paragraph"> 
+        <p>There are multiple ways of defining steps.<br> Steps definition order is important as they are always executed in order.</p> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_steps_can_be_defined_as_a_ruby_block"><a class="anchor" href="#_steps_can_be_defined_as_a_ruby_block"></a>Steps can be defined as a Ruby block</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step do |state|
+    state[:what] = "World"
+  end
+
+  step do
+    print_to_output "Hello "
+  end
+
+  step do |state|
+    print_to_output state[:what]
+  end
+
+  step do
+    print_to_output "!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello World!</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_steps_can_be_defined_as_methods"><a class="anchor" href="#_steps_can_be_defined_as_methods"></a>Steps can be defined as methods</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step :set_what_state
+  step :print_hello
+  step "print_what"
+  step :print_bang
+
+  def set_what_state(state)
+    state[:what] = "World"
+  end
+
+  def print_hello
+    print_to_output "Hello "
+  end
+
+  def print_what(state)
+    print_to_output state[:what]
+  end
+
+  def print_bang
+    print_to_output "!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello World!</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_steps_can_be_defined_as_any_objects_with_call_method"><a class="anchor" href="#_steps_can_be_defined_as_any_objects_with_call_method"></a>Steps can be defined as any objects with call method</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class SetWhatState
+  def initialize(what)
+    @what = what
+  end
+
+  def call(state)
+    state[:what] = @what
+  end
+end
+
+class PrintHello
+  def self.call
+    print_to_output "Hello "
+  end
+end
+
+class PrintWhat
+  def self.call(state)
+    print_to_output state[:what]
+  end
+end
+
+PrintBang = -&gt; { print_to_output "!" }
+
+class Operation &lt; Rung::Base
+  step SetWhatState.new("World")
+  step PrintHello
+  step PrintWhat
+  step PrintBang
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello World!</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
+    <h2 id="Success-and-failure"><a class="anchor" href="#Success-and-failure"></a><strong>Success and failure</strong></h2> 
+    <div class="sectionbody"> 
+     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('Success-and-failure');document.getElementById('hidden-Success-and-failure').style.display = 'inline';this.style.display = 'none'"> </span> 
+     <span id="hidden-Success-and-failure" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('Success-and-failure');this.style.display = 'none'"> </span> 
      <div class="sidebarblock"> 
       <div class="content"> 
        <div class="paragraph"> 
@@ -698,10 +934,10 @@ end</pre>
     </div> 
    </div> 
    <div class="sect1"> 
-    <h2 id="state"><a class="anchor" href="#state"></a><strong>state</strong></h2> 
+    <h2 id="State"><a class="anchor" href="#State"></a><strong>State</strong></h2> 
     <div class="sectionbody"> 
-     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('state');document.getElementById('hidden-state').style.display = 'inline';this.style.display = 'none'"> </span> 
-     <span id="hidden-state" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('state');this.style.display = 'none'"> </span> 
+     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('State');document.getElementById('hidden-State').style.display = 'inline';this.style.display = 'none'"> </span> 
+     <span id="hidden-State" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('State');this.style.display = 'none'"> </span> 
      <div class="sect2"> 
       <h3 id="_state_is_shared_across_step_executions"><a class="anchor" href="#_state_is_shared_across_step_executions"></a>State is shared across step executions</h3> 
       <div class="exampleblock"> 
@@ -884,247 +1120,11 @@ end</pre>
      </div> 
     </div> 
    </div> 
-   <div class="sect1"> 
-    <h2 id="steps_definition"><a class="anchor" href="#steps_definition"></a><strong>steps_definition</strong></h2> 
-    <div class="sectionbody"> 
-     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('steps_definition');document.getElementById('hidden-steps_definition').style.display = 'inline';this.style.display = 'none'"> </span> 
-     <span id="hidden-steps_definition" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('steps_definition');this.style.display = 'none'"> </span> 
-     <div class="sidebarblock"> 
-      <div class="content"> 
-       <div class="paragraph"> 
-        <p>There are multiple ways of defining steps.<br> Steps definition order is important as they are always executed in order.</p> 
-       </div> 
-      </div> 
-     </div> 
-     <div class="sect2"> 
-      <h3 id="_steps_can_be_defined_as_a_ruby_block"><a class="anchor" href="#_steps_can_be_defined_as_a_ruby_block"></a>Steps can be defined as a Ruby block</h3> 
-      <div class="exampleblock"> 
-       <div class="content"> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Given 
-          </dt> 
-          <dd> 
-           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
-  step do |state|
-    state[:what] = "World"
-  end
-
-  step do
-    print_to_output "Hello "
-  end
-
-  step do |state|
-    print_to_output state[:what]
-  end
-
-  step do
-    print_to_output "!"
-  end
-end</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            When 
-          </dt> 
-          <dd> 
-           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>Operation.new.call</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Then 
-          </dt> 
-          <dd> 
-           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>Hello World!</pre> 
-         </div> 
-        </div> 
-       </div> 
-      </div> 
-     </div> 
-     <div class="sect2"> 
-      <h3 id="_steps_can_be_defined_as_methods"><a class="anchor" href="#_steps_can_be_defined_as_methods"></a>Steps can be defined as methods</h3> 
-      <div class="exampleblock"> 
-       <div class="content"> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Given 
-          </dt> 
-          <dd> 
-           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
-  step :set_what_state
-  step :print_hello
-  step "print_what"
-  step :print_bang
-
-  def set_what_state(state)
-    state[:what] = "World"
-  end
-
-  def print_hello
-    print_to_output "Hello "
-  end
-
-  def print_what(state)
-    print_to_output state[:what]
-  end
-
-  def print_bang
-    print_to_output "!"
-  end
-end</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            When 
-          </dt> 
-          <dd> 
-           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>Operation.new.call</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Then 
-          </dt> 
-          <dd> 
-           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>Hello World!</pre> 
-         </div> 
-        </div> 
-       </div> 
-      </div> 
-     </div> 
-     <div class="sect2"> 
-      <h3 id="_steps_can_be_defined_as_any_objects_with_call_method"><a class="anchor" href="#_steps_can_be_defined_as_any_objects_with_call_method"></a>Steps can be defined as any objects with call method</h3> 
-      <div class="exampleblock"> 
-       <div class="content"> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Given 
-          </dt> 
-          <dd> 
-           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>class SetWhatState
-  def initialize(what)
-    @what = what
-  end
-
-  def call(state)
-    state[:what] = @what
-  end
-end
-
-class PrintHello
-  def self.call
-    print_to_output "Hello "
-  end
-end
-
-class PrintWhat
-  def self.call(state)
-    print_to_output state[:what]
-  end
-end
-
-PrintBang = -&gt; { print_to_output "!" }
-
-class Operation &lt; Rung::Base
-  step SetWhatState.new("World")
-  step PrintHello
-  step PrintWhat
-  step PrintBang
-end</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            When 
-          </dt> 
-          <dd> 
-           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>Operation.new.call</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Then 
-          </dt> 
-          <dd> 
-           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>Hello World!</pre> 
-         </div> 
-        </div> 
-       </div> 
-      </div> 
-     </div> 
-    </div> 
-   </div> 
   </div> 
   <div id="footer" style="color:gray;font-size:11px">
     Generated by 
-   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 27, 2019, 7:15:06 PM 
-   <span style="float:right;font-size:11px"> Execution time: 2.88 seconds</span> 
+   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 27, 2019, 7:23:58 PM 
+   <span style="float:right;font-size:11px"> Execution time: 2.326 seconds</span> 
   </div> 
   <style>  
 
