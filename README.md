@@ -18,7 +18,7 @@ Or install it yourself as:
 
     $ gem install rung
 
-## Usage
+## Example Usage
 
 Example:
 ```ruby
@@ -63,6 +63,12 @@ if result.success?
   print "Created order #{result[:order_id]}"
 end
 ```
+
+## Docs
+
+Docs are available at https://gogiel.github.io/rung/.
+
+They are generated from Cucumber specifications using [Cukedoctor](https://github.com/rmpestano/cukedoctor).
 
 ## Development
 

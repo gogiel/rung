@@ -5,17 +5,7 @@ jobs:
       - image: circleci/ruby:2.4.1
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v1-bundle-{{ checksum "Gemfile.lock" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-bundle-
-      - run: bundle check || bundle install
-      - save_cache:
-          paths:
-            - vendor/bundle
-          key: v1-bundle-{{ checksum "Gemfile.lock" }}
-
+      - run: bundle install
       - run: bundle exec rspec
       - run: bundle exec cucumber
 
@@ -33,8 +23,32 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run: wget https://bintray.com/artifact/download/rmpestano/cukedoctor/com/github/cukedoctor/cukedoctor-main/1.2.1/cukedoctor-main-1.2.1.jar
-      - run: mkdir /tmp/generated_doc
-      - run: java -jar cukedoctor-main-1.2.1.jar -f html5 -p /tmp/workspace/cucumber.json -o /tmp/generated_doc -hideSummarySection
+      - run: mkdir /tmp/workspace/generated_doc
+      - run: java -jar cukedoctor-main-1.2.1.jar -f html5 -p /tmp/workspace/cucumber.json -o /tmp/workspace/generated_doc/index -hideSummarySection -documentTitle "Rung Documentation" -hideStepTime
+      - persist_to_workspace:
+          root: /tmp/workspace/
+          paths:
+            - generated_doc
+
+  deploy_docs:
+    docker:
+      - image: node:8.10.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Install and configure dependencies
+          command: |
+            npm install -g --silent gh-pages@2.0.1
+            git config user.email "circle-ci@jedrychowski.org"
+            git config user.name "ci-build"
+      - add_ssh_keys:
+          fingerprints:
+            - "32:c9:81:d7:bf:fb:82:c1:48:eb:fc:a8:98:f8:48:7e"
+      - run:
+          name: Deploy docs to gh-pages branch
+          command: gh-pages --dist workspace/generated_doc/ --message "[skip ci] Doc update"
 
 workflows:
   version: 2
@@ -45,3 +59,12 @@ workflows:
       - build_docs:
           requires:
             - build
+          filters:
+            branches:
+              only: master
+      - deploy_docs:
+          requires:
+            - build_docs
+          filters:
+            branches:
+              only: master
