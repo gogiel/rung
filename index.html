@@ -447,7 +447,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
        <li><a href="#_installation">Installation</a></li> 
        <li><a href="#_example_usage">Example Usage</a></li> 
        <li><a href="#_docs">Docs</a></li> 
-       <li><a href="#_docs_locally">Docs locally</a></li> 
        <li><a href="#_development">Development</a></li> 
        <li><a href="#_contributing">Contributing</a></li> 
        <li><a href="#_license">License</a></li> 
@@ -487,7 +486,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
       </ul> </li> 
      <li><a href="#Step-wrappers"><strong>Step wrappers</strong></a> 
       <ul class="sectlevel2"> 
-       <li><a href="#_defining_a_wrapper_that_prints_before_and_after_step_calls">Defining a wrapper that prints before and after step calls</a></li> 
+       <li><a href="#_wrapper_can_yield_to_execute_inner_steps">Wrapper can yield to execute inner steps</a></li> 
       </ul> </li> 
     </ul> 
    </div> 
@@ -498,7 +497,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
     <h2 id="_rung_this_is_wip_project_please_do_not_use_it"><a class="anchor" href="#_rung_this_is_wip_project_please_do_not_use_it"></a>Rung. This is WIP project! Please do NOT use it!</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
-      <p>Rung is service object/business operation/Railway DSL, inspired by<br> <a href="http://trailblazer.to/gems/operation">Trailblazer Operation</a>.</p> 
+      <p>Rung is service object/business operation/Railway DSL.</p> 
+     </div> 
+     <div class="paragraph"> 
+      <p>This is a lightweight, independent alternative to<br> <a href="http://trailblazer.to/gems/operation">Trailblazer Operation</a><br> and<br> <a href="https://github.com/dry-rb/dry-transaction">dry-transaction</a>.</p> 
      </div> 
      <div class="sect2"> 
       <h3 id="_installation"><a class="anchor" href="#_installation"></a>Installation</h3> 
@@ -534,7 +536,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
       </div> 
       <div class="listingblock"> 
        <div class="content"> 
-        <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">class CreateOrder &lt; Rung::Base
+        <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">class CreateOrder &lt; Rung::Operation
   step do |state|
     state[:order_id] = "order-#{SecureRandom.uuid }"
   end
@@ -585,9 +587,6 @@ end</code></pre>
       <div class="paragraph"> 
        <p>They are generated from Cucumber specifications using<br> <a href="https://github.com/rmpestano/cukedoctor">Cukedoctor</a>.</p> 
       </div> 
-     </div> 
-     <div class="sect2"> 
-      <h3 id="_docs_locally"><a class="anchor" href="#_docs_locally"></a>Docs locally</h3> 
       <div class="paragraph"> 
        <p>Docs can be generated locally using <code>$ rake docker_generate_docs</code>. It requires Docker.</p> 
       </div> 
@@ -629,7 +628,7 @@ end</code></pre>
         <p>For example when in e-commerce application new order is created then<br> the system should update state of the warehouse, send an e-mail, create new waybill etc.</p> 
        </div> 
        <div class="paragraph"> 
-        <p>To define Operation create a new class based on <code>Rung::Base</code>. Inside it you can define steps using Rung DSL. Steps definition order is important as they are always executed in order.</p> 
+        <p>To define Operation create a new class based on <code>Rung::Operation</code>. Inside it you can define steps using Rung DSL. Steps definition order is important as they are always executed in order.</p> 
        </div> 
        <div class="paragraph"> 
         <p>Steps can communicate with each other and external world using State. When operation is called then new state object is created (see <a href="#State">State</a>). State is shared between step executions.</p> 
@@ -655,7 +654,7 @@ end</code></pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step do |state|
     state[:what] = "World"
   end
@@ -723,7 +722,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step :set_what_state
   step :print_hello
   step "print_what"
@@ -820,7 +819,7 @@ end
 
 PrintBang = -&gt; { print_to_output "!" }
 
-class Operation &lt; Rung::Base
+class Operation &lt; Rung::Operation
   step SetWhatState.new("World")
   step PrintHello
   step PrintWhat
@@ -897,7 +896,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step do
     # do something...
     true
@@ -975,7 +974,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step do
     # do something...
     true
@@ -1053,7 +1052,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step do
     print_to_output "Hello"
     true
@@ -1142,7 +1141,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step do |state|
     state[:what] = "World!"
   end
@@ -1206,7 +1205,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step do |state|
     state[:output_text] = "Hello "
   end
@@ -1266,7 +1265,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step do |state|
     state[:output_text] &lt;&lt; "World!"
   end
@@ -1357,7 +1356,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step do
     print_to_output "Working..."
     # something went wrong...
@@ -1419,7 +1418,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step do
     print_to_output "Working..."
     # everything's fine
@@ -1481,7 +1480,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step do |state|
     print_to_output "Working..."
     # something went wrong...
@@ -1548,7 +1547,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   failure do
     print_to_output "Something's wrong"
   end
@@ -1679,7 +1678,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   tee do
     print_to_output "Hello "
     false
@@ -1740,7 +1739,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step do
     print_to_output "Hello"
     false # fail
@@ -1801,7 +1800,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step do
     print_to_output "Hello "
   end
@@ -1861,7 +1860,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step do
     print_to_output "Hello "
     false # fail
@@ -1922,7 +1921,7 @@ end</pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   step do
     print_to_output "Hello"
     false # fail
@@ -1991,7 +1990,7 @@ end</pre>
        </div> 
        <div class="listingblock"> 
         <div class="content"> 
-         <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">class Operation &lt; Rung::Base
+         <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">class Operation &lt; Rung::Operation
   class TransactionWrapper
     def self.call(state)
       return if state.fail?
@@ -2012,7 +2011,7 @@ end</code></pre>
       </div> 
      </div> 
      <div class="sect2"> 
-      <h3 id="_defining_a_wrapper_that_prints_before_and_after_step_calls"><a class="anchor" href="#_defining_a_wrapper_that_prints_before_and_after_step_calls"></a>Defining a wrapper that prints before and after step calls</h3> 
+      <h3 id="_wrapper_can_yield_to_execute_inner_steps"><a class="anchor" href="#_wrapper_can_yield_to_execute_inner_steps"></a>Wrapper can yield to execute inner steps</h3> 
       <div class="exampleblock"> 
        <div class="content"> 
         <div class="dlist"> 
@@ -2027,7 +2026,7 @@ end</code></pre>
         </div> 
         <div class="listingblock"> 
          <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
+          <pre>class Operation &lt; Rung::Operation
   class Wrapper
     def self.call
       print_to_output "Starting\n"
@@ -2128,8 +2127,8 @@ Failure!</pre>
   </div> 
   <div id="footer" style="color:gray;font-size:11px">
     Generated by 
-   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 28, 2019, 7:32:58 PM 
-   <span style="float:right;font-size:11px"> Execution time: 3.022 seconds</span> 
+   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 28, 2019, 9:08:02 PM 
+   <span style="float:right;font-size:11px"> Execution time: 2.683 seconds</span> 
   </div> 
   <style>  
 

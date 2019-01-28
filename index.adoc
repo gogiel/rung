@@ -32,7 +32,7 @@ Operation defines a business process that consists of multiple steps.
 For example when in e-commerce application new order is created then +
 the system should update state of the warehouse, send an e-mail, create new waybill etc.
 
-To define Operation create a new class based on `Rung::Base`.
+To define Operation create a new class based on `Rung::Operation`.
 Inside it you can define steps using Rung DSL.
 Steps definition order is important as they are always executed in order.
 
@@ -50,7 +50,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step do |state|
     state[:what] = "World"
   end
@@ -92,7 +92,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step :set_what_state
   step :print_hello
   step "print_what"
@@ -163,7 +163,7 @@ end
 
 PrintBang = -> { print_to_output "!" }
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step SetWhatState.new("World")
   step PrintHello
   step PrintWhat
@@ -212,7 +212,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step do
     # do something...
     true
@@ -256,7 +256,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step do
     # do something...
     true
@@ -300,7 +300,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step do
     print_to_output "Hello"
     true
@@ -357,7 +357,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step do |state|
     state[:what] = "World!"
   end
@@ -395,7 +395,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step do |state|
     state[:output_text] = "Hello "
   end
@@ -429,7 +429,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step do |state|
     state[:output_text] << "World!"
   end
@@ -482,7 +482,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step do
     print_to_output "Working..."
     # something went wrong...
@@ -518,7 +518,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step do
     print_to_output "Working..."
     # everything's fine
@@ -554,7 +554,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step do |state|
     print_to_output "Working..."
     # something went wrong...
@@ -595,7 +595,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   failure do
     print_to_output "Something's wrong"
   end
@@ -661,7 +661,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   tee do
     print_to_output "Hello "
     false
@@ -696,7 +696,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step do
     print_to_output "Hello"
     false # fail
@@ -731,7 +731,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step do
     print_to_output "Hello "
   end
@@ -765,7 +765,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step do
     print_to_output "Hello "
     false # fail
@@ -800,7 +800,7 @@ Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   step do
     print_to_output "Hello"
     false # fail
@@ -851,7 +851,7 @@ any of the inner steps failed or `true` otherwise.
 
 Example usage:
 ```ruby
-class Operation < Rung::Base
+class Operation < Rung::Operation
   class TransactionWrapper
     def self.call(state)
       return if state.fail?
@@ -870,14 +870,14 @@ end
 ```
 ****
 
-=== Defining a wrapper that prints before and after step calls
+=== Wrapper can yield to execute inner steps
 
 ==========
 Given ::
 definition icon:thumbs-up[role="green",title="Passed"]
 ----
 
-class Operation < Rung::Base
+class Operation < Rung::Operation
   class Wrapper
     def self.call
       print_to_output "Starting\n"
