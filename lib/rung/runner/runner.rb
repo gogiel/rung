@@ -11,12 +11,12 @@ module Rung
 
       extend Forwardable
       def_delegators :@context,
-        :steps_definition, :operation_instance, :state, :failed?, :success?, :fail!
+        :steps_definition, :operation_instance, :failed?, :success?, :fail!
 
       def call
         run_success = iterate(steps_definition)
 
-        Result.new(run_success, state)
+        Result.new(run_success, @context.to_h)
       end
 
       private
@@ -32,7 +32,7 @@ module Rung
 
         step_success = call_step(step)
 
-        fail! unless step_success
+        fail! unless step.ignore_result? || step_success
       end
 
       def call_step(step)
@@ -40,13 +40,13 @@ module Rung
       end
 
       def call_nested_step(nested)
-        CallHelper.call(nested.operation, state, operation_instance) do
+        CallHelper.call(nested.operation, @context, operation_instance) do
           iterate(nested.nested_steps)
         end
       end
 
       def call_simple_step(step)
-        CallHelper.call(step.operation, state, operation_instance, step.from_block)
+        CallHelper.call(step.operation, @context, operation_instance, step.from_block)
       end
     end
   end

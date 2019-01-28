@@ -9,8 +9,16 @@ module Rung
         add_step(reference, &block)
       end
 
+      def tee(reference = nil, &block)
+        add_step(reference, ignore_result: true, &block)
+      end
+
       def failure(reference = nil, &block)
-        add_step(reference, run_on: :failure, &block)
+        add_step(reference, run_on: :failure, ignore_result: true, &block)
+      end
+
+      def always(reference = nil, &block)
+        add_step(reference, run_on: :any, ignore_result: true, &block)
       end
 
       def wrap(wrapper, &block)

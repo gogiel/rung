@@ -15,6 +15,10 @@ module Rung
       def nested?
         true
       end
+
+      def ignore_result?
+        true
+      end
     end
   end
 end

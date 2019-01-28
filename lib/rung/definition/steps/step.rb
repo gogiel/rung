@@ -1,10 +1,11 @@
 module Rung
   module Definition
     class Step
-      def initialize(operation, from_block: false, run_on: :success)
+      def initialize(operation, from_block: false, run_on: :success, ignore_result: false)
         @operation = operation
         @from_block = from_block if from_block
         @run_on = run_on
+        @ignore_result = ignore_result
       end
 
       attr_reader :operation, :from_block
@@ -24,6 +25,10 @@ module Rung
 
       def nested?
         false
+      end
+
+      def ignore_result?
+        @ignore_result
       end
     end
   end

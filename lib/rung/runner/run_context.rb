@@ -1,11 +1,11 @@
 module Rung
   module Runner
-    class RunContext
+    class RunContext < Hash
       def initialize(steps_definition:, operation_instance:, state:)
         @steps_definition = steps_definition
         @operation_instance = operation_instance
-        @state = state
         @failed = false
+        merge!(state)
       end
 
       attr_reader :steps_definition, :operation_instance, :state
@@ -14,12 +14,12 @@ module Rung
         @failed = true
       end
 
-      def failed?
+      def fail?
         @failed
       end
 
       def success?
-        !failed?
+        !fail?
       end
     end
   end
