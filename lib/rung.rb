@@ -3,8 +3,8 @@ require 'forwardable'
 require 'rung/version'
 require 'rung/error'
 
-require 'rung/definition/steps/step'
-require 'rung/definition/steps/nested_step'
+require 'rung/definition/step'
+require 'rung/definition/nested_step'
 
 require 'rung/definition/steps_definition'
 require 'rung/definition/steps_dsl'

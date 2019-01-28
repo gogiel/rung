@@ -1,7 +1,11 @@
 = Rung. This is WIP project! Please do NOT use it!
 
-Rung is service object/business operation/Railway DSL, inspired by
-http://trailblazer.to/gems/operation[Trailblazer Operation].
+Rung is service object/business operation/Railway DSL.
+
+This is a lightweight, independent alternative to
+http://trailblazer.to/gems/operation[Trailblazer Operation]
+and
+https://github.com/dry-rb/dry-transaction[dry-transaction].
 
 == Installation
 
@@ -78,8 +82,6 @@ Docs are available at https://gogiel.github.io/rung/.
 
 They are generated from Cucumber specifications using
 https://github.com/rmpestano/cukedoctor[Cukedoctor].
-
-== Docs locally
 
 Docs can be generated locally using `$ rake docker_generate_docs`. It requires Docker.
 

@@ -33,7 +33,7 @@ class Operation < Rung::Base
 end
 ```
 
-  Scenario: Defining a wrapper that prints before and after step calls
+  Scenario: Wrapper can yield to execute inner steps
     Given definition
     """ruby
     class Operation < Rung::Base
