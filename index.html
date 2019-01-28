@@ -452,13 +452,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
        <li><a href="#_contributing">Contributing</a></li> 
        <li><a href="#_license">License</a></li> 
       </ul> </li> 
-     <li><a href="#State"><strong>State</strong></a> 
-      <ul class="sectlevel2"> 
-       <li><a href="#_state_is_shared_across_step_executions">State is shared across step executions</a></li> 
-       <li><a href="#_state_is_available_in_the_result_object">State is available in the result object</a></li> 
-       <li><a href="#_initial_state_can_be_passed_to_call_method">Initial state can be passed to call method</a></li> 
-      </ul> </li> 
-     <li><a href="#Steps-definition"><strong>Steps definition</strong></a> 
+     <li><a href="#Operation-definition"><strong>Operation definition</strong></a> 
       <ul class="sectlevel2"> 
        <li><a href="#_steps_can_be_defined_as_a_ruby_block">Steps can be defined as a Ruby block</a></li> 
        <li><a href="#_steps_can_be_defined_as_methods">Steps can be defined as methods</a></li> 
@@ -469,6 +463,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
        <li><a href="#_when_all_steps_return_truthy_value_the_result_is_a_success">When all steps return truthy value the result is a success</a></li> 
        <li><a href="#_when_at_least_one_step_returns_a_falsy_value_then_the_result_is_a_failure">When at least one step returns a falsy value then the result is a failure</a></li> 
        <li><a href="#_when_a_step_fails_then_the_next_steps_are_not_executed">When a step fails then the next steps are not executed</a></li> 
+      </ul> </li> 
+     <li><a href="#State"><strong>State</strong></a> 
+      <ul class="sectlevel2"> 
+       <li><a href="#_state_is_shared_across_step_executions">State is shared across step executions</a></li> 
+       <li><a href="#_state_is_available_in_the_result_object">State is available in the result object</a></li> 
+       <li><a href="#_initial_state_can_be_passed_to_call_method">Initial state can be passed to call method</a></li> 
+      </ul> </li> 
+     <li><a href="#Failure-Step"><strong>Failure Step</strong></a> 
+      <ul class="sectlevel2"> 
+       <li><a href="#_failure_step_is_executed_when_operation_fails">Failure step is executed when operation fails</a></li> 
+       <li><a href="#_failure_step_is_not_executed_when_operation_doesn_t_fail">Failure step is not executed when operation doesn’t fail</a></li> 
+       <li><a href="#_it_s_possible_to_define_multiple_failure_steps">It’s possible to define multiple failure steps</a></li> 
+       <li><a href="#_failure_step_is_executed_only_when_it_s_defined_after_failed_step">Failure step is executed only when it’s defined after failed step</a></li> 
       </ul> </li> 
     </ul> 
    </div> 
@@ -597,201 +604,26 @@ end</code></pre>
     </div> 
    </div> 
    <div class="sect1"> 
-    <h2 id="State"><a class="anchor" href="#State"></a><strong>State</strong></h2> 
+    <h2 id="Operation-definition"><a class="anchor" href="#Operation-definition"></a><strong>Operation definition</strong></h2> 
     <div class="sectionbody"> 
-     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('State');document.getElementById('hidden-State').style.display = 'inline';this.style.display = 'none'"> </span> 
-     <span id="hidden-State" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('State');this.style.display = 'none'"> </span> 
-     <div class="sect2"> 
-      <h3 id="_state_is_shared_across_step_executions"><a class="anchor" href="#_state_is_shared_across_step_executions"></a>State is shared across step executions</h3> 
-      <div class="exampleblock"> 
-       <div class="content"> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Given 
-          </dt> 
-          <dd> 
-           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
-  step do |state|
-    state[:what] = "World!"
-  end
-
-  step do
-    print_to_output "Hello "
-  end
-
-  step do |state|
-    print_to_output state[:what]
-  end
-end</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            When 
-          </dt> 
-          <dd> 
-           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>Operation.new.call</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Then 
-          </dt> 
-          <dd> 
-           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>Hello World!</pre> 
-         </div> 
-        </div> 
-       </div> 
-      </div> 
-     </div> 
-     <div class="sect2"> 
-      <h3 id="_state_is_available_in_the_result_object"><a class="anchor" href="#_state_is_available_in_the_result_object"></a>State is available in the result object</h3> 
-      <div class="exampleblock"> 
-       <div class="content"> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Given 
-          </dt> 
-          <dd> 
-           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
-  step do |state|
-    state[:output_text] = "Hello "
-  end
-
-  step do |state|
-    state[:output_text] &lt;&lt; "World!"
-  end
-end</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            When 
-          </dt> 
-          <dd> 
-           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>@result = Operation.new.call</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Then 
-          </dt> 
-          <dd> 
-           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>@result[:output_text] == "Hello World!"</pre> 
-         </div> 
-        </div> 
-       </div> 
-      </div> 
-     </div> 
-     <div class="sect2"> 
-      <h3 id="_initial_state_can_be_passed_to_call_method"><a class="anchor" href="#_initial_state_can_be_passed_to_call_method"></a>Initial state can be passed to call method</h3> 
-      <div class="exampleblock"> 
-       <div class="content"> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Given 
-          </dt> 
-          <dd> 
-           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>class Operation &lt; Rung::Base
-  step do |state|
-    state[:output_text] &lt;&lt; "World!"
-  end
-end</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            When 
-          </dt> 
-          <dd> 
-           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>@result = Operation.new.call(output_text: "Hello ")</pre> 
-         </div> 
-        </div> 
-        <div class="dlist"> 
-         <dl> 
-          <dt class="hdlist1">
-            Then 
-          </dt> 
-          <dd> 
-           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
-          </dd> 
-         </dl> 
-        </div> 
-        <div class="listingblock"> 
-         <div class="content"> 
-          <pre>@result[:output_text] == "Hello World!"</pre> 
-         </div> 
-        </div> 
-       </div> 
-      </div> 
-     </div> 
-    </div> 
-   </div> 
-   <div class="sect1"> 
-    <h2 id="Steps-definition"><a class="anchor" href="#Steps-definition"></a><strong>Steps definition</strong></h2> 
-    <div class="sectionbody"> 
-     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('Steps-definition');document.getElementById('hidden-Steps-definition').style.display = 'inline';this.style.display = 'none'"> </span> 
-     <span id="hidden-Steps-definition" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('Steps-definition');this.style.display = 'none'"> </span> 
+     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('Operation-definition');document.getElementById('hidden-Operation-definition').style.display = 'inline';this.style.display = 'none'"> </span> 
+     <span id="hidden-Operation-definition" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('Operation-definition');this.style.display = 'none'"> </span> 
      <div class="sidebarblock"> 
       <div class="content"> 
        <div class="paragraph"> 
-        <p>There are multiple ways of defining steps.<br> Steps definition order is important as they are always executed in order.</p> 
+        <p>Operation defines a business process that consists of multiple steps.</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>For example when in e-commerce application new order is created then<br> the system should update state of the warehouse, send an e-mail, create new waybill etc.</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>To define Operation create a new class based on <code>Rung::Base</code>. Inside it you can define steps using Rung DSL. Steps definition order is important as they are always executed in order.</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>Steps can communicate with each other and external world using State. When operation is called then new state object is created (see <a href="#State">State</a>). State is shared between step executions.</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>There are multiple ways of defining steps.</p> 
        </div> 
       </div> 
      </div> 
@@ -1027,7 +859,13 @@ end</pre>
      <div class="sidebarblock"> 
       <div class="content"> 
        <div class="paragraph"> 
-        <p>Operation call returns <code>Rung::Runner::Result</code> object that can be either a success or a failure.<br> Result has <code>success?</code> and <code>failure?</code> methods.</p> 
+        <p>Value returned from step call is important. Successful step should return truthy value (anything other than <code>false</code> or <code>nil</code>).</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>If step returns falsy value (<code>false</code> or <code>nil</code>) then the operation is marked as failed. All next steps are not executed.</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>Result of the Operation call (<code>Rung::Runner::Result</code> object) can be either a success or a failure. Result has <code>success?</code> and <code>failure?</code> methods.</p> 
        </div> 
       </div> 
      </div> 
@@ -1255,11 +1093,506 @@ end</pre>
      </div> 
     </div> 
    </div> 
+   <div class="sect1"> 
+    <h2 id="State"><a class="anchor" href="#State"></a><strong>State</strong></h2> 
+    <div class="sectionbody"> 
+     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('State');document.getElementById('hidden-State').style.display = 'inline';this.style.display = 'none'"> </span> 
+     <span id="hidden-State" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('State');this.style.display = 'none'"> </span> 
+     <div class="sidebarblock"> 
+      <div class="content"> 
+       <div class="paragraph"> 
+        <p>State is a Hash object that is shared between step executions.</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>It’s used to share state between steps and communicate with external world.</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>User can provide initial state when calling the operation. By default it’s empty.</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>State can be used as the operation output as it is accessible in the result object.</p> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_state_is_shared_across_step_executions"><a class="anchor" href="#_state_is_shared_across_step_executions"></a>State is shared across step executions</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step do |state|
+    state[:what] = "World!"
+  end
+
+  step do
+    print_to_output "Hello "
+  end
+
+  step do |state|
+    print_to_output state[:what]
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello World!</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_state_is_available_in_the_result_object"><a class="anchor" href="#_state_is_available_in_the_result_object"></a>State is available in the result object</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step do |state|
+    state[:output_text] = "Hello "
+  end
+
+  step do |state|
+    state[:output_text] &lt;&lt; "World!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result = Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result[:output_text] == "Hello World!"</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_initial_state_can_be_passed_to_call_method"><a class="anchor" href="#_initial_state_can_be_passed_to_call_method"></a>Initial state can be passed to call method</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step do |state|
+    state[:output_text] &lt;&lt; "World!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result = Operation.new.call(output_text: "Hello ")</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result[:output_text] == "Hello World!"</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            And 
+          </dt> 
+          <dd> 
+           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result.state == { output_text: "Hello World!" }</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
+    <h2 id="Failure-Step"><a class="anchor" href="#Failure-Step"></a><strong>Failure Step</strong></h2> 
+    <div class="sectionbody"> 
+     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('Failure-Step');document.getElementById('hidden-Failure-Step').style.display = 'inline';this.style.display = 'none'"> </span> 
+     <span id="hidden-Failure-Step" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('Failure-Step');this.style.display = 'none'"> </span> 
+     <div class="sidebarblock"> 
+      <div class="content"> 
+       <div class="paragraph"> 
+        <p>When operations fails (see <a href="#Success-and-failure">Success and failure</a>) next normal steps are no ignored and not executed.</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>There’s a way to react to a failure with special failure steps.</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>Failure steps can be defined similarly to normal steps (as a block, method, or a callable object).</p> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_failure_step_is_executed_when_operation_fails"><a class="anchor" href="#_failure_step_is_executed_when_operation_fails"></a>Failure step is executed when operation fails</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step do
+    print_to_output "Working..."
+    # something went wrong...
+    false
+  end
+
+  failure do
+    print_to_output " Oops!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Working... Oops!</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_failure_step_is_not_executed_when_operation_doesn_t_fail"><a class="anchor" href="#_failure_step_is_not_executed_when_operation_doesn_t_fail"></a>Failure step is not executed when operation doesn’t fail</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step do
+    print_to_output "Working..."
+    # everything's fine
+    true
+  end
+
+  failure do
+    print_to_output " Oops!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Working...</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_it_s_possible_to_define_multiple_failure_steps"><a class="anchor" href="#_it_s_possible_to_define_multiple_failure_steps"></a>It’s possible to define multiple failure steps</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step do |state|
+    print_to_output "Working..."
+    # something went wrong...
+    state[:error] = "404"
+    false
+  end
+
+  failure do
+    print_to_output " Error: "
+  end
+
+  failure do |state|
+    print_to_output state[:error]
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Working... Error: 404</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_failure_step_is_executed_only_when_it_s_defined_after_failed_step"><a class="anchor" href="#_failure_step_is_executed_only_when_it_s_defined_after_failed_step"></a>Failure step is executed only when it’s defined after failed step</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  failure do
+    print_to_output "Something's wrong"
+  end
+
+  step do
+    print_to_output "Working..."
+    # something went wrong...
+    false
+  end
+
+  failure do
+    print_to_output " Oops!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Working... Oops!</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
   </div> 
   <div id="footer" style="color:gray;font-size:11px">
     Generated by 
-   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 27, 2019, 10:46:06 PM 
-   <span style="float:right;font-size:11px"> Execution time: 3.648 seconds</span> 
+   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 28, 2019, 12:03:26 AM 
+   <span style="float:right;font-size:11px"> Execution time: 2.241 seconds</span> 
   </div> 
   <style>  
 

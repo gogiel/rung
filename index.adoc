@@ -19,123 +19,28 @@
 include::/home/circleci/project/target/cukedoctor-intro.adoc[leveloffset=+1]
 
 
-[[State, State]]
-== *State*
+[[Operation-definition, Operation definition]]
+== *Operation definition*
 
 ifndef::backend-pdf[]
-minmax::State[]
-endif::[]
-=== State is shared across step executions
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Base
-  step do |state|
-    state[:what] = "World!"
-  end
-
-  step do
-    print_to_output "Hello "
-  end
-
-  step do |state|
-    print_to_output state[:what]
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-Operation.new.call
-
-----
-Then ::
-I see output icon:thumbs-up[role="green",title="Passed"]
-----
-
-Hello World!
-
-----
-==========
-
-=== State is available in the result object
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Base
-  step do |state|
-    state[:output_text] = "Hello "
-  end
-
-  step do |state|
-    state[:output_text] << "World!"
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result = Operation.new.call
-
-----
-Then ::
-I can assure that icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result[:output_text] == "Hello World!"
-
-----
-==========
-
-=== Initial state can be passed to call method
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Base
-  step do |state|
-    state[:output_text] << "World!"
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result = Operation.new.call(output_text: "Hello ")
-
-----
-Then ::
-I can assure that icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result[:output_text] == "Hello World!"
-
-----
-==========
-
-[[Steps-definition, Steps definition]]
-== *Steps definition*
-
-ifndef::backend-pdf[]
-minmax::Steps-definition[]
+minmax::Operation-definition[]
 endif::[]
 ****
+:!hardbreaks:
+Operation defines a business process that consists of multiple steps.
+
+For example when in e-commerce application new order is created then +
+the system should update state of the warehouse, send an e-mail, create new waybill etc.
+
+To define Operation create a new class based on `Rung::Base`.
+Inside it you can define steps using Rung DSL.
+Steps definition order is important as they are always executed in order.
+
+Steps can communicate with each other and external world using State. When
+operation is called then new state object is created (see link:#State[State]).
+State is shared between step executions.
+
 There are multiple ways of defining steps.
-  Steps definition order is important as they are always executed in order.
 ****
 
 === Steps can be defined as a Ruby block
@@ -289,8 +194,15 @@ ifndef::backend-pdf[]
 minmax::Success-and-failure[]
 endif::[]
 ****
-Operation call returns `Rung::Runner::Result` object that can be either a success or a failure.
-  Result has `success?` and `failure?` methods.
+:!hardbreaks:
+Value returned from step call is important. Successful step should
+return truthy value (anything other than `false` or `nil`).
+
+If step returns falsy value (`false` or `nil`) then
+the operation is marked as failed. All next steps are not executed.
+
+Result of the Operation call (`Rung::Runner::Result` object)
+can be either a success or a failure. Result has `success?` and `failure?` methods.
 ****
 
 === When all steps return truthy value the result is a success
@@ -417,6 +329,301 @@ I see output icon:thumbs-up[role="green",title="Passed"]
 ----
 
 Hello
+
+----
+==========
+
+[[State, State]]
+== *State*
+
+ifndef::backend-pdf[]
+minmax::State[]
+endif::[]
+****
+:!hardbreaks:
+State is a Hash object that is shared between step executions.
+
+It's used to share state between steps and communicate with external world.
+
+User can provide initial state when calling the operation. By default it's empty.
+
+State can be used as the operation output as it is accessible in the result object.
+****
+
+=== State is shared across step executions
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do |state|
+    state[:what] = "World!"
+  end
+
+  step do
+    print_to_output "Hello "
+  end
+
+  step do |state|
+    print_to_output state[:what]
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+Operation.new.call
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+Hello World!
+
+----
+==========
+
+=== State is available in the result object
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do |state|
+    state[:output_text] = "Hello "
+  end
+
+  step do |state|
+    state[:output_text] << "World!"
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.new.call
+
+----
+Then ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result[:output_text] == "Hello World!"
+
+----
+==========
+
+=== Initial state can be passed to call method
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do |state|
+    state[:output_text] << "World!"
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.new.call(output_text: "Hello ")
+
+----
+Then ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result[:output_text] == "Hello World!"
+
+----
+And ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.state == { output_text: "Hello World!" }
+
+----
+==========
+
+[[Failure-Step, Failure Step]]
+== *Failure Step*
+
+ifndef::backend-pdf[]
+minmax::Failure-Step[]
+endif::[]
+****
+:!hardbreaks:
+When operations fails (see link:#Success-and-failure[Success and failure])
+next normal steps are no ignored and not executed.
+
+There's a way to react to a failure with special failure steps.
+
+Failure steps can be defined similarly to normal steps (as a block, method, or a callable object).
+****
+
+=== Failure step is executed when operation fails
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do
+    print_to_output "Working..."
+    # something went wrong...
+    false
+  end
+
+  failure do
+    print_to_output " Oops!"
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+Operation.new.call
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+Working... Oops!
+
+----
+==========
+
+=== Failure step is not executed when operation doesn't fail
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do
+    print_to_output "Working..."
+    # everything's fine
+    true
+  end
+
+  failure do
+    print_to_output " Oops!"
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+Operation.new.call
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+Working...
+
+----
+==========
+
+=== It's possible to define multiple failure steps
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  step do |state|
+    print_to_output "Working..."
+    # something went wrong...
+    state[:error] = "404"
+    false
+  end
+
+  failure do
+    print_to_output " Error: "
+  end
+
+  failure do |state|
+    print_to_output state[:error]
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+Operation.new.call
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+Working... Error: 404
+
+----
+==========
+
+=== Failure step is executed only when it's defined after failed step
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Base
+  failure do
+    print_to_output "Something's wrong"
+  end
+
+  step do
+    print_to_output "Working..."
+    # something went wrong...
+    false
+  end
+
+  failure do
+    print_to_output " Oops!"
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+Operation.new.call
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+Working... Oops!
 
 ----
 ==========
