@@ -477,6 +477,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
        <li><a href="#_it_s_possible_to_define_multiple_failure_steps">It’s possible to define multiple failure steps</a></li> 
        <li><a href="#_failure_step_is_executed_only_when_it_s_defined_after_failed_step">Failure step is executed only when it’s defined after failed step</a></li> 
       </ul> </li> 
+     <li><a href="#Other-steps"><strong>Other steps</strong></a> 
+      <ul class="sectlevel2"> 
+       <li><a href="#_code_tee_code_step_result_is_not_checked"><code>tee</code> step result is not checked</a></li> 
+       <li><a href="#_code_tee_code_is_not_executed_when_operation_is_failed"><code>tee</code> is not executed when operation is failed</a></li> 
+       <li><a href="#_code_always_code_is_called_when_operation_is_successful"><code>always</code> is called when operation is successful</a></li> 
+       <li><a href="#_code_always_code_is_called_when_operation_is_failed"><code>always</code> is called when operation is failed</a></li> 
+       <li><a href="#_state_object_provides_information_about_operation_success_with_code_success_code_and_code_fail_code">state object provides information about operation success with <code>success?</code> and <code>fail?</code></a></li> 
+      </ul> </li> 
+     <li><a href="#Step-wrappers"><strong>Step wrappers</strong></a> 
+      <ul class="sectlevel2"> 
+       <li><a href="#_defining_a_wrapper_that_prints_before_and_after_step_calls">Defining a wrapper that prints before and after step calls</a></li> 
+      </ul> </li> 
     </ul> 
    </div> 
   </div> 
@@ -1588,11 +1600,536 @@ end</pre>
      </div> 
     </div> 
    </div> 
+   <div class="sect1"> 
+    <h2 id="Other-steps"><a class="anchor" href="#Other-steps"></a><strong>Other steps</strong></h2> 
+    <div class="sectionbody"> 
+     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('Other-steps');document.getElementById('hidden-Other-steps').style.display = 'inline';this.style.display = 'none'"> </span> 
+     <span id="hidden-Other-steps" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('Other-steps');this.style.display = 'none'"> </span> 
+     <div class="sidebarblock"> 
+      <div class="content"> 
+       <div class="paragraph"> 
+        <p><code>step</code> and <code>failure</code> are the basic step types. For the convenience there are also two additional step types defined:</p> 
+       </div> 
+       <div class="ulist"> 
+        <ul> 
+         <li> <p><code>tee</code> - works the same way as <code>step</code> but ignores the return value</p> </li> 
+         <li> <p><code>always</code> - executes on both success and failure. Return value is not checked</p> </li> 
+        </ul> 
+       </div> 
+       <table class="tableblock frame-all grid-all spread"> 
+        <caption class="title">
+          Table 1. Table Step behaviours 
+        </caption> 
+        <colgroup> 
+         <col style="width: 25%;"> 
+         <col style="width: 25%;"> 
+         <col style="width: 25%;"> 
+         <col style="width: 25%;"> 
+        </colgroup> 
+        <thead> 
+         <tr> 
+          <th class="tableblock halign-left valign-top">Step name</th> 
+          <th class="tableblock halign-left valign-top">Execute on success</th> 
+          <th class="tableblock halign-left valign-top">Execute on failure</th> 
+          <th class="tableblock halign-left valign-top">Ignore return value</th> 
+         </tr> 
+        </thead> 
+        <tbody> 
+         <tr> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">step</p></td> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">✗</p></td> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">✗</p></td> 
+         </tr> 
+         <tr> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">failure</p></td> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">✗</p></td> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td> 
+         </tr> 
+         <tr> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">tee</p></td> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">✗</p></td> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td> 
+         </tr> 
+         <tr> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">always</p></td> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td> 
+          <td class="tableblock halign-left valign-top"><p class="tableblock">✓</p></td> 
+         </tr> 
+        </tbody> 
+       </table> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_code_tee_code_step_result_is_not_checked"><a class="anchor" href="#_code_tee_code_step_result_is_not_checked"></a><code>tee</code> step result is not checked</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  tee do
+    print_to_output "Hello "
+    false
+  end
+
+  step do
+    print_to_output "World!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello World!</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_code_tee_code_is_not_executed_when_operation_is_failed"><a class="anchor" href="#_code_tee_code_is_not_executed_when_operation_is_failed"></a><code>tee</code> is not executed when operation is failed</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step do
+    print_to_output "Hello"
+    false # fail
+  end
+
+  tee do
+    print_to_output "World!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_code_always_code_is_called_when_operation_is_successful"><a class="anchor" href="#_code_always_code_is_called_when_operation_is_successful"></a><code>always</code> is called when operation is successful</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step do
+    print_to_output "Hello "
+  end
+
+  always do
+    print_to_output "World!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello World!</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_code_always_code_is_called_when_operation_is_failed"><a class="anchor" href="#_code_always_code_is_called_when_operation_is_failed"></a><code>always</code> is called when operation is failed</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step do
+    print_to_output "Hello "
+    false # fail
+  end
+
+  always do
+    print_to_output "World!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello World!</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_state_object_provides_information_about_operation_success_with_code_success_code_and_code_fail_code"><a class="anchor" href="#_state_object_provides_information_about_operation_success_with_code_success_code_and_code_fail_code"></a>state object provides information about operation success with <code>success?</code> and <code>fail?</code></h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  step do
+    print_to_output "Hello"
+    false # fail
+  end
+
+  always do |state|
+    print_to_output " World!" if state.success?
+    print_to_output " There!" if state.fail?
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello There!</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
+    <h2 id="Step-wrappers"><a class="anchor" href="#Step-wrappers"></a><strong>Step wrappers</strong></h2> 
+    <div class="sectionbody"> 
+     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('Step-wrappers');document.getElementById('hidden-Step-wrappers').style.display = 'inline';this.style.display = 'none'"> </span> 
+     <span id="hidden-Step-wrappers" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('Step-wrappers');this.style.display = 'none'"> </span> 
+     <div class="sidebarblock"> 
+      <div class="content"> 
+       <div class="paragraph"> 
+        <p>It’s possible to wrap around a group of successive steps with <code>wrap</code>. This is a common use case for surrounding multiple steps in a database transaction and rolling back when steps inside fail.</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>Wrapper interface is the same as for any other step. It requires an object responding to <code>call()</code> or <code>call(state)</code>. The only difference is that it also receives a block.</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>Yielding the block calls inner steps. It returns <code>false</code> if any of the inner steps failed or <code>true</code> otherwise.</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>Example usage:</p> 
+       </div> 
+       <div class="listingblock"> 
+        <div class="content"> 
+         <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">class Operation &lt; Rung::Base
+  class TransactionWrapper
+    def self.call(state)
+      return if state.fail?
+      ActiveRecord::Base.transaction do
+        success = yield
+        raise ActiveRecord::Rollback unless success
+      end
+    end
+  end
+
+  wrap TransactionWrapper do
+    step :create_new_entity
+    step :update_counter
+  end
+end</code></pre> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_defining_a_wrapper_that_prints_before_and_after_step_calls"><a class="anchor" href="#_defining_a_wrapper_that_prints_before_and_after_step_calls"></a>Defining a wrapper that prints before and after step calls</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Base
+  class Wrapper
+    def self.call
+      print_to_output "Starting\n"
+      success = yield
+      if success
+        print_to_output "\nSuccess!"
+      else
+        print_to_output "\nFailure!"
+      end
+    end
+  end
+
+  wrap Wrapper do
+    step { print_to_output "Hello " }
+    step do |state|
+      print_to_output "World!"
+      state[:variable] # return variable passed by the user
+    end
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call(variable: true)</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Starting
+Hello World!
+Success!</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I clear output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call(variable: false)</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Starting
+Hello World!
+Failure!</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
   </div> 
   <div id="footer" style="color:gray;font-size:11px">
     Generated by 
-   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 28, 2019, 9:50:01 AM 
-   <span style="float:right;font-size:11px"> Execution time: 2.478 seconds</span> 
+   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 28, 2019, 7:32:58 PM 
+   <span style="float:right;font-size:11px"> Execution time: 3.022 seconds</span> 
   </div> 
   <style>  
 
