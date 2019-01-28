@@ -59,7 +59,7 @@ describe Rung do
       empty_wrapper = self.empty_wrapper
       failure_spy = self.failure_spy
 
-      Class.new(Rung::Base) do
+      Class.new(Rung::Operation) do
         def initialize(method_with_argument_spy, method_no_arguments_spy)
           @method_with_argument_spy = method_with_argument_spy
           @method_no_arguments_spy = method_no_arguments_spy

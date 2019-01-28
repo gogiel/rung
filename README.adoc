@@ -34,7 +34,7 @@ Example:
 
 [source,ruby]
 ----
-class CreateOrder < Rung::Base
+class CreateOrder < Rung::Operation
   step do |state|
     state[:order_id] = "order-#{SecureRandom.uuid }"
   end

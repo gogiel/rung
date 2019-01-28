@@ -11,7 +11,7 @@ Failure steps can be defined similarly to normal steps (as a block, method, or a
   Scenario: Failure step is executed when operation fails
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step do
         print_to_output "Working..."
         # something went wrong...
@@ -35,7 +35,7 @@ Failure steps can be defined similarly to normal steps (as a block, method, or a
   Scenario: Failure step is not executed when operation doesn't fail
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step do
         print_to_output "Working..."
         # everything's fine
@@ -59,7 +59,7 @@ Failure steps can be defined similarly to normal steps (as a block, method, or a
   Scenario: It's possible to define multiple failure steps
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step do |state|
         print_to_output "Working..."
         # something went wrong...
@@ -88,7 +88,7 @@ Failure steps can be defined similarly to normal steps (as a block, method, or a
   Scenario: Failure step is executed only when it's defined after failed step
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       failure do
         print_to_output "Something's wrong"
       end

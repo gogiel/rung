@@ -12,7 +12,7 @@ State can be used as the operation output as it is accessible in the result obje
   Scenario: State is shared across step executions
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step do |state|
         state[:what] = "World!"
       end
@@ -38,7 +38,7 @@ State can be used as the operation output as it is accessible in the result obje
   Scenario: State is available in the result object
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step do |state|
         state[:output_text] = "Hello "
       end
@@ -60,7 +60,7 @@ State can be used as the operation output as it is accessible in the result obje
   Scenario: Initial state can be passed to call method
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step do |state|
         state[:output_text] << "World!"
       end

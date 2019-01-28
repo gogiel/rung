@@ -1,5 +1,5 @@
 module Rung
-  class Base
+  class Operation
     extend Definition::StepsDSL
 
     def self.call(initial_state = {})

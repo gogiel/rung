@@ -21,7 +21,7 @@ types defined:
   Scenario: `tee` step result is not checked
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       tee do
         print_to_output "Hello "
         false
@@ -44,7 +44,7 @@ types defined:
   Scenario: `tee` is not executed when operation is failed
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step do
         print_to_output "Hello"
         false # fail
@@ -68,7 +68,7 @@ types defined:
   Scenario: `always` is called when operation is successful
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step do
         print_to_output "Hello "
       end
@@ -90,7 +90,7 @@ types defined:
   Scenario: `always` is called when operation is failed
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step do
         print_to_output "Hello "
         false # fail
@@ -113,7 +113,7 @@ types defined:
   Scenario: state object provides information about operation success with `success?` and `fail?`
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step do
         print_to_output "Hello"
         false # fail

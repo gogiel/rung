@@ -14,4 +14,4 @@ require 'rung/runner/call_helper'
 require 'rung/runner/runner'
 require 'rung/runner/state'
 
-require 'rung/base'
+require 'rung/operation'

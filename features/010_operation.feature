@@ -6,7 +6,7 @@ Operation defines a business process that consists of multiple steps.
 For example when in e-commerce application new order is created then +
 the system should update state of the warehouse, send an e-mail, create new waybill etc.
 
-To define Operation create a new class based on `Rung::Base`.
+To define Operation create a new class based on `Rung::Operation`.
 Inside it you can define steps using Rung DSL.
 Steps definition order is important as they are always executed in order.
 
@@ -19,7 +19,7 @@ There are multiple ways of defining steps.
   Scenario: Steps can be defined as a Ruby block
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step do |state|
         state[:what] = "World"
       end
@@ -49,7 +49,7 @@ There are multiple ways of defining steps.
   Scenario: Steps can be defined as methods
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step :set_what_state
       step :print_hello
       step "print_what"
@@ -108,7 +108,7 @@ There are multiple ways of defining steps.
 
     PrintBang = -> { print_to_output "!" }
 
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step SetWhatState.new("World")
       step PrintHello
       step PrintWhat

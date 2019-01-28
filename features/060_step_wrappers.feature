@@ -15,7 +15,7 @@ any of the inner steps failed or `true` otherwise.
 
 Example usage:
 ```ruby
-class Operation < Rung::Base
+class Operation < Rung::Operation
   class TransactionWrapper
     def self.call(state)
       return if state.fail?
@@ -36,7 +36,7 @@ end
   Scenario: Wrapper can yield to execute inner steps
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       class Wrapper
         def self.call
           print_to_output "Starting\n"

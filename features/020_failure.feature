@@ -13,7 +13,7 @@ can be either a success or a failure. Result has `success?` and `failure?` metho
   Scenario: When all steps return truthy value the result is a success
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step do
         # do something...
         true
@@ -42,7 +42,7 @@ can be either a success or a failure. Result has `success?` and `failure?` metho
   Scenario: When at least one step returns a falsy value then the result is a failure
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step do
         # do something...
         true
@@ -71,7 +71,7 @@ can be either a success or a failure. Result has `success?` and `failure?` metho
   Scenario: When a step fails then the next steps are not executed
     Given definition
     """ruby
-    class Operation < Rung::Base
+    class Operation < Rung::Operation
       step do
         print_to_output "Hello"
         true
