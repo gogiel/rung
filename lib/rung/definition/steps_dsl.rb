@@ -2,7 +2,7 @@ module Rung
   module Definition
     module StepsDSL
       def steps_definition
-        @steps_definition ||= StepsDefinition.new
+        @steps_definition ||= []
       end
 
       def step(reference = nil, &block)
@@ -49,8 +49,7 @@ module Rung
       end
 
       def with_new_steps_definition
-        old_steps_definition = @steps_definition
-        @steps_definition = StepsDefinition.new
+        old_steps_definition, @steps_definition = @steps_definition, []
         yield
       ensure
         @steps_definition = old_steps_definition

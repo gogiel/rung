@@ -6,7 +6,6 @@ require 'rung/error'
 require 'rung/definition/step'
 require 'rung/definition/nested_step'
 
-require 'rung/definition/steps_definition'
 require 'rung/definition/steps_dsl'
 
 require 'rung/runner/result'
