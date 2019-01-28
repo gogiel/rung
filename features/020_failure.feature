@@ -1,6 +1,14 @@
+# order: 20
 Feature: Success and failure
-  Operation call returns `Rung::Runner::Result` object that can be either a success or a failure.
-  Result has `success?` and `failure?` methods.
+:!hardbreaks:
+Value returned from step call is important. Successful step should
+return truthy value (anything other than `false` or `nil`).
+
+If step returns falsy value (`false` or `nil`) then
+the operation is marked as failed. All next steps are not executed.
+
+Result of the Operation call (`Rung::Runner::Result` object)
+can be either a success or a failure. Result has `success?` and `failure?` methods.
 
   Scenario: When all steps return truthy value the result is a success
     Given definition

@@ -1,6 +1,20 @@
-Feature: Steps definition
-  There are multiple ways of defining steps.
-  Steps definition order is important as they are always executed in order.
+# order: 10
+Feature: Operation definition
+:!hardbreaks:
+Operation defines a business process that consists of multiple steps.
+
+For example when in e-commerce application new order is created then +
+the system should update state of the warehouse, send an e-mail, create new waybill etc.
+
+To define Operation create a new class based on `Rung::Base`.
+Inside it you can define steps using Rung DSL.
+Steps definition order is important as they are always executed in order.
+
+Steps can communicate with each other and external world using State. When
+operation is called then new state object is created (see link:#State[State]).
+State is shared between step executions.
+
+There are multiple ways of defining steps.
 
   Scenario: Steps can be defined as a Ruby block
     Given definition
