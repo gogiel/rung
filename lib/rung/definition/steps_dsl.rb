@@ -22,7 +22,7 @@ module Rung
 
       def add_step(reference, options = {}, &block)
         step = if block
-          Step.new(block, *options, from_block: true)
+          Step.new(block, **options, from_block: true)
         else
           Step.new(reference, options)
         end
