@@ -11,7 +11,6 @@ require 'rung/definition/steps_dsl'
 
 require 'rung/runner/result'
 require 'rung/runner/run_context'
-require 'rung/runner/run_state'
 require 'rung/runner/call_helper'
 require 'rung/runner/runner'
 

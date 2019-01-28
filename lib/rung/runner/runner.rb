@@ -5,7 +5,7 @@ module Rung
         @context = RunContext.new(
           steps_definition: steps_definition,
           operation_instance: operation_instance,
-          state: RunState.new(initial_state)
+          state: {}.merge(initial_state)
         )
       end
 
