@@ -1,4 +1,4 @@
-= Rung
+= Rung. This is WIP project! Please do NOT use it!
 
 Rung is service object/business operation/Railway DSL, inspired by
 http://trailblazer.to/gems/operation[Trailblazer Operation].
