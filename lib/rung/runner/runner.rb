@@ -16,7 +16,7 @@ module Rung
       def call
         run_success = iterate(steps_definition)
 
-        Result.new(run_success, @context.to_h)
+        Result.new(run_success, @context.state)
       end
 
       private
@@ -40,13 +40,17 @@ module Rung
       end
 
       def call_nested_step(nested)
-        CallHelper.call(nested.operation, @context, operation_instance) do
+        CallHelper.call(nested.operation, step_state, operation_instance) do
           iterate(nested.nested_steps)
         end
       end
 
       def call_simple_step(step)
-        CallHelper.call(step.operation, @context, operation_instance, step.from_block)
+        CallHelper.call(step.operation, step_state, operation_instance, step.from_block)
+      end
+
+      def step_state
+        State.from_run_context @context
       end
     end
   end
