@@ -1,10 +1,11 @@
 module Rung
   module Runner
     class Runner
-      def initialize(steps_definition, initial_state, operation_instance)
+      def initialize(steps_definition, callbacks_definition, initial_state, operation_instance)
         @context = RunContext.new(
           steps_definition: steps_definition,
           operation_instance: operation_instance,
+          callbacks_definition: callbacks_definition,
           state: {}.merge(initial_state)
         )
       end
@@ -14,12 +15,18 @@ module Rung
         :steps_definition, :operation_instance, :failed?, :success?, :fail!
 
       def call
-        run_success = iterate(steps_definition)
+        run_success = with_callbacks { iterate(steps_definition) }
 
         Result.new(run_success, @context.state)
       end
 
       private
+
+      def with_callbacks(&block)
+        @context.callbacks_definition.reverse.inject(block) do |inner, callback|
+          -> { CallHelper.call(callback.callback, step_state, operation_instance, callback.from_block, &inner) }
+        end.call
+      end
 
       def iterate(steps_definition)
         steps_definition.each(&method(:run_step))

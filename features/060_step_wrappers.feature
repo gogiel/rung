@@ -79,3 +79,42 @@ end
     Hello World!
     Failure!
     """
+
+  Scenario: Wrappers can be nested
+    Given definition
+    """ruby
+    class Operation < Rung::Operation
+      class Wrapper
+        def initialize(name)
+          @name = name
+        end
+
+        def call
+          print_to_output "Starting #{@name}\n"
+          yield
+          print_to_output "Finishing #{@name}\n"
+        end
+      end
+
+      wrap Wrapper.new("first") do
+        step { print_to_output "Hello\n" }
+        wrap Wrapper.new("second") do
+          step { print_to_output "Hi\n" }
+        end
+      end
+    end
+    """
+    When I run
+    """
+    Operation.new.call
+    """
+    Then I see output
+    """
+    Starting first
+    Hello
+    Starting second
+    Hi
+    Finishing second
+    Finishing first
+
+    """

@@ -22,8 +22,16 @@ module Rung
       end
 
       def wrap(wrapper, &block)
-        nested_steps = calculate_block_nested_steps(&block)
-        add_nested_step wrapper, nested_steps
+        if wrapper && block
+          nested_steps = calculate_block_nested_steps(&block)
+          add_nested_step wrapper, nested_steps
+        else
+          if respond_to?(:add_global_wrapper)
+            add_global_wrapper(wrapper, &block)
+          else
+            raise Error("Global wrappers can be defined only on the operation level")
+          end
+        end
       end
 
       private
