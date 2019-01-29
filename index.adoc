@@ -936,3 +936,198 @@ Failure!
 ----
 ==========
 
+=== Wrappers can be nested
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Operation
+  class Wrapper
+    def initialize(name)
+      @name = name
+    end
+
+    def call
+      print_to_output "Starting #{@name}\n"
+      yield
+      print_to_output "Finishing #{@name}\n"
+    end
+  end
+
+  wrap Wrapper.new("first") do
+    step { print_to_output "Hello\n" }
+    wrap Wrapper.new("second") do
+      step { print_to_output "Hi\n" }
+    end
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+Operation.new.call
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+Starting first
+Hello
+Starting second
+Hi
+Finishing second
+Finishing first
+
+
+----
+==========
+
+[[Operation-wrappers, Operation wrappers]]
+== *Operation wrappers*
+
+ifndef::backend-pdf[]
+minmax::Operation-wrappers[]
+endif::[]
+****
+It is possible to define global wrapper on the Operation level using `wrapper` call
+without nested steps block.
+****
+
+=== Operation can have multiple global wrappers
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Operation
+  class Wrapper
+    def initialize(name)
+      @name = name
+    end
+
+    def call
+      print_to_output "#{@name} start\n"
+      yield
+      print_to_output "#{@name} done\n"
+    end
+  end
+
+  wrap Wrapper.new("1")
+  wrap Wrapper.new("2")
+
+  step { print_to_output "Hello World!\n" }
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+Operation.new.call(variable: true)
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+1 start
+2 start
+Hello World!
+2 done
+1 done
+
+
+----
+==========
+
+[[Exceptions-handling, Exceptions handling]]
+== *Exceptions handling*
+
+ifndef::backend-pdf[]
+minmax::Exceptions-handling[]
+endif::[]
+=== All exceptions are raised
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Operation
+  step { raise "Oh no!" }
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+begin
+  Operation.new.call(output_text: "Hello ")
+rescue => e
+  print_to_output e.message
+end
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+Oh no!
+
+----
+==========
+
+=== Exception can be caught in a wrapper
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Operation
+  class Wrapper
+    def self.call(state)
+      yield
+    rescue
+      print_to_output "Exception handled"
+      state[:exception_handled] = true
+    end
+  end
+
+  wrap Wrapper
+
+  step { print_to_output "Hello World!\n"; raise "oops!" }
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.new.call
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+Hello World!
+Exception handled
+
+----
+And ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.state == { exception_handled: true }
+
+----
+==========
+

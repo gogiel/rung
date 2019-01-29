@@ -487,6 +487,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
      <li><a href="#Step-wrappers"><strong>Step wrappers</strong></a> 
       <ul class="sectlevel2"> 
        <li><a href="#_wrapper_can_yield_to_execute_inner_steps">Wrapper can yield to execute inner steps</a></li> 
+       <li><a href="#_wrappers_can_be_nested">Wrappers can be nested</a></li> 
+      </ul> </li> 
+     <li><a href="#Operation-wrappers"><strong>Operation wrappers</strong></a> 
+      <ul class="sectlevel2"> 
+       <li><a href="#_operation_can_have_multiple_global_wrappers">Operation can have multiple global wrappers</a></li> 
+      </ul> </li> 
+     <li><a href="#Exceptions-handling"><strong>Exceptions handling</strong></a> 
+      <ul class="sectlevel2"> 
+       <li><a href="#_all_exceptions_are_raised">All exceptions are raised</a></li> 
+       <li><a href="#_exception_can_be_caught_in_a_wrapper">Exception can be caught in a wrapper</a></li> 
       </ul> </li> 
     </ul> 
    </div> 
@@ -2122,13 +2132,322 @@ Failure!</pre>
        </div> 
       </div> 
      </div> 
+     <div class="sect2"> 
+      <h3 id="_wrappers_can_be_nested"><a class="anchor" href="#_wrappers_can_be_nested"></a>Wrappers can be nested</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Operation
+  class Wrapper
+    def initialize(name)
+      @name = name
+    end
+
+    def call
+      print_to_output "Starting #{@name}\n"
+      yield
+      print_to_output "Finishing #{@name}\n"
+    end
+  end
+
+  wrap Wrapper.new("first") do
+    step { print_to_output "Hello\n" }
+    wrap Wrapper.new("second") do
+      step { print_to_output "Hi\n" }
+    end
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Starting first
+Hello
+Starting second
+Hi
+Finishing second
+Finishing first</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
+    <h2 id="Operation-wrappers"><a class="anchor" href="#Operation-wrappers"></a><strong>Operation wrappers</strong></h2> 
+    <div class="sectionbody"> 
+     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('Operation-wrappers');document.getElementById('hidden-Operation-wrappers').style.display = 'inline';this.style.display = 'none'"> </span> 
+     <span id="hidden-Operation-wrappers" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('Operation-wrappers');this.style.display = 'none'"> </span> 
+     <div class="sidebarblock"> 
+      <div class="content"> 
+       <div class="paragraph"> 
+        <p>It is possible to define global wrapper on the Operation level using <code>wrapper</code> call without nested steps block.</p> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_operation_can_have_multiple_global_wrappers"><a class="anchor" href="#_operation_can_have_multiple_global_wrappers"></a>Operation can have multiple global wrappers</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Operation
+  class Wrapper
+    def initialize(name)
+      @name = name
+    end
+
+    def call
+      print_to_output "#{@name} start\n"
+      yield
+      print_to_output "#{@name} done\n"
+    end
+  end
+
+  wrap Wrapper.new("1")
+  wrap Wrapper.new("2")
+
+  step { print_to_output "Hello World!\n" }
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call(variable: true)</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>1 start
+2 start
+Hello World!
+2 done
+1 done</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
+    <h2 id="Exceptions-handling"><a class="anchor" href="#Exceptions-handling"></a><strong>Exceptions handling</strong></h2> 
+    <div class="sectionbody"> 
+     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('Exceptions-handling');document.getElementById('hidden-Exceptions-handling').style.display = 'inline';this.style.display = 'none'"> </span> 
+     <span id="hidden-Exceptions-handling" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('Exceptions-handling');this.style.display = 'none'"> </span> 
+     <div class="sect2"> 
+      <h3 id="_all_exceptions_are_raised"><a class="anchor" href="#_all_exceptions_are_raised"></a>All exceptions are raised</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Operation
+  step { raise "Oh no!" }
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>begin
+  Operation.new.call(output_text: "Hello ")
+rescue =&gt; e
+  print_to_output e.message
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Oh no!</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_exception_can_be_caught_in_a_wrapper"><a class="anchor" href="#_exception_can_be_caught_in_a_wrapper"></a>Exception can be caught in a wrapper</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Operation
+  class Wrapper
+    def self.call(state)
+      yield
+    rescue
+      print_to_output "Exception handled"
+      state[:exception_handled] = true
+    end
+  end
+
+  wrap Wrapper
+
+  step { print_to_output "Hello World!\n"; raise "oops!" }
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result = Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello World!
+Exception handled</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            And 
+          </dt> 
+          <dd> 
+           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result.state == { exception_handled: true }</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
     </div> 
    </div> 
   </div> 
   <div id="footer" style="color:gray;font-size:11px">
     Generated by 
-   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 28, 2019, 9:08:02 PM 
-   <span style="float:right;font-size:11px"> Execution time: 2.683 seconds</span> 
+   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 29, 2019, 12:47:22 AM 
+   <span style="float:right;font-size:11px"> Execution time: 2.684 seconds</span> 
   </div> 
   <style>  
 
