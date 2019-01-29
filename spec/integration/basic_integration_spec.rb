@@ -66,9 +66,9 @@ describe Rung do
         end
 
         step :test_method
-        wrap empty_wrapper do
+        step empty_wrapper do
           step class_with_state_argument
-          wrap empty_wrapper do
+          step empty_wrapper do
             step class_without_argument
             step :test_method2
           end

@@ -5,7 +5,7 @@ module Rung
         @callbacks_definition ||= []
       end
 
-      def add_global_wrapper(action = nil, &block)
+      def around(action = nil, &block)
         callback = if block
           AroundCallback.new block, from_block: true
         else

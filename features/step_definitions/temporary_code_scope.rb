@@ -1,8 +1,5 @@
-class TemporaryScope
-end
-
 Given("definition") do |content|
-  @temporary_scope ||= TemporaryScope.new
+  @temporary_scope ||= Object.new
 
   @temporary_scope.instance_eval(content)
 end

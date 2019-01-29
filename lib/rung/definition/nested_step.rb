@@ -1,22 +1,14 @@
 module Rung
   module Definition
-    class NestedStep
-      def initialize(action, nested_steps)
-        @action = action
+    class NestedStep < Step
+      def initialize(action, nested_steps, options)
+        super(action, options)
         @nested_steps = nested_steps
       end
 
-      attr_reader :action, :nested_steps
-
-      def run?(_success)
-        true
-      end
+      attr_reader :nested_steps
 
       def nested?
-        true
-      end
-
-      def ignore_result?
         true
       end
     end

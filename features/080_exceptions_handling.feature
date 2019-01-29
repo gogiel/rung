@@ -34,7 +34,7 @@ Feature: Exceptions handling
         end
       end
 
-      wrap Wrapper
+      around Wrapper
 
       step { print_to_output "Hello World!\n"; raise "oops!" }
     end

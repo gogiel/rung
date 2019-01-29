@@ -1,9 +1,10 @@
 # order: 70
 Feature: Operation wrappers
-It is possible to define global wrapper on the Operation level using `wrapper` call
-without nested steps block.
+:!hardbreaks:
+It is possible to define global wrappers on the Operation level using `around` call.
 
   Scenario: Operation can have multiple global wrappers
+  Wrappers are called in the order they are defined.
     Given definition
     """ruby
     class Operation < Rung::Operation
@@ -19,8 +20,8 @@ without nested steps block.
         end
       end
 
-      wrap Wrapper.new("1")
-      wrap Wrapper.new("2")
+      around Wrapper.new("1")
+      around Wrapper.new("2")
 
       step { print_to_output "Hello World!\n" }
     end

@@ -41,7 +41,7 @@ class CreateOrder < Rung::Operation
   step ValidateMagazineState
   step :log_start
 
-  wrap WithBenchmark do
+  step WithBenchmark do
     step CreateTemporaryOrder
     step :place_order
   end
