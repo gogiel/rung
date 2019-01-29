@@ -8,7 +8,7 @@ module Rung
     end
 
     def call(initial_state = {})
-      Runner::Runner.new(self.class.steps_definition, self.class.callbacks_definition, initial_state, self).call
+      Runner::Runner.new(self, initial_state).call
     end
   end
 end

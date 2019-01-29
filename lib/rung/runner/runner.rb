@@ -1,29 +1,24 @@
 module Rung
   module Runner
     class Runner
-      def initialize(steps_definition, callbacks_definition, initial_state, operation_instance)
-        @context = RunContext.new(
-          steps_definition: steps_definition,
-          operation_instance: operation_instance,
-          callbacks_definition: callbacks_definition,
-          state: {}.merge(initial_state)
-        )
+      def initialize(operation_instance, initial_state)
+        @context = RunContext.new(operation_instance, {}.merge(initial_state))
       end
 
       extend Forwardable
-      def_delegators :@context,
-        :steps_definition, :operation_instance, :failed?, :success?, :fail!
+      def_delegators :@context, :steps_definition, :callbacks_definition,
+        :operation_instance, :success?, :fail!, :state
 
       def call
         run_success = with_callbacks { iterate(steps_definition) }
 
-        Result.new(run_success, @context.state)
+        Result.new(run_success, state)
       end
 
       private
 
       def with_callbacks(&block)
-        @context.callbacks_definition.reverse.inject(block) do |inner, callback|
+        callbacks_definition.reverse.inject(block) do |inner, callback|
           -> { CallHelper.call(callback.callback, step_state, operation_instance, callback.from_block, &inner) }
         end.call
       end
