@@ -1,14 +1,14 @@
 module Rung
   module Definition
     class Step
-      def initialize(operation, from_block: false, run_on: :success, ignore_result: false)
-        @operation = operation
+      def initialize(action, from_block: false, run_on: :success, ignore_result: false)
+        @action = action
         @from_block = from_block if from_block
         @run_on = run_on
         @ignore_result = ignore_result
       end
 
-      attr_reader :operation, :from_block
+      attr_reader :action, :from_block
 
       def run?(success)
         case @run_on

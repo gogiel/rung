@@ -5,11 +5,11 @@ module Rung
         @callbacks_definition ||= []
       end
 
-      def add_global_wrapper(reference = nil, &block)
+      def add_global_wrapper(action = nil, &block)
         callback = if block
           AroundCallback.new block, from_block: true
         else
-          AroundCallback.new reference
+          AroundCallback.new action
         end
         callbacks_definition.push callback
       end

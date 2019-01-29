@@ -1,12 +1,12 @@
 module Rung
   module Definition
     class AroundCallback
-      def initialize(callback = nil, from_block: false)
-        @callback = callback
+      def initialize(action = nil, from_block: false)
+        @action = action
         @from_block = from_block
       end
 
-      attr_reader :callback, :from_block
+      attr_reader :action, :from_block
     end
   end
 end

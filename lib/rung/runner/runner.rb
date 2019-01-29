@@ -19,7 +19,7 @@ module Rung
 
       def with_callbacks(&block)
         callbacks_definition.reverse.inject(block) do |inner, callback|
-          -> { CallHelper.call(callback.callback, step_state, operation_instance, callback.from_block, &inner) }
+          -> { CallHelper.call(callback.action, step_state, operation_instance, callback.from_block, &inner) }
         end.call
       end
 
@@ -42,13 +42,13 @@ module Rung
       end
 
       def call_nested_step(nested)
-        CallHelper.call(nested.operation, step_state, operation_instance) do
+        CallHelper.call(nested.action, step_state, operation_instance) do
           iterate(nested.nested_steps)
         end
       end
 
       def call_simple_step(step)
-        CallHelper.call(step.operation, step_state, operation_instance, step.from_block)
+        CallHelper.call(step.action, step_state, operation_instance, step.from_block)
       end
 
       def step_state

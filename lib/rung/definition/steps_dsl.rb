@@ -5,20 +5,20 @@ module Rung
         @steps_definition ||= []
       end
 
-      def step(reference = nil, &block)
-        add_step(reference, &block)
+      def step(action = nil, &block)
+        add_step(action, &block)
       end
 
-      def tee(reference = nil, &block)
-        add_step(reference, ignore_result: true, &block)
+      def tee(action = nil, &block)
+        add_step(action, ignore_result: true, &block)
       end
 
-      def failure(reference = nil, &block)
-        add_step(reference, run_on: :failure, ignore_result: true, &block)
+      def failure(action = nil, &block)
+        add_step(action, run_on: :failure, ignore_result: true, &block)
       end
 
-      def always(reference = nil, &block)
-        add_step(reference, run_on: :any, ignore_result: true, &block)
+      def always(action = nil, &block)
+        add_step(action, run_on: :any, ignore_result: true, &block)
       end
 
       def wrap(wrapper, &block)
@@ -36,11 +36,11 @@ module Rung
 
       private
 
-      def add_step(reference, options = {}, &block)
+      def add_step(action, options = {}, &block)
         step = if block
           Step.new(block, **options, from_block: true)
         else
-          Step.new(reference, options)
+          Step.new(action, options)
         end
         steps_definition.push(step)
       end
