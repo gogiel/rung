@@ -6,6 +6,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    asciidoctor (1.5.8)
     backports (3.11.4)
     builder (3.2.3)
     coderay (1.1.2)
@@ -47,17 +48,20 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
+    yard (0.9.18)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  asciidoctor
   bundler (~> 1.16)
   cucumber (~> 3.1)
   pry
   rake (~> 10.0)
   rspec (~> 3.0)
   rung!
+  yard
 
 BUNDLED WITH
    1.16.3
