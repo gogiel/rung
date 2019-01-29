@@ -20,3 +20,35 @@ Feature: Exceptions handling
     """
     Oh no!
     """
+
+  Scenario: Exception can be caught in a wrapper
+    Given definition
+    """ruby
+    class Operation < Rung::Operation
+      class Wrapper
+        def self.call(state)
+          yield
+        rescue
+          print_to_output "Exception handled"
+          state[:exception_handled] = true
+        end
+      end
+
+      wrap Wrapper
+
+      step { print_to_output "Hello World!\n"; raise "oops!" }
+    end
+    """
+    When I run
+    """
+    @result = Operation.new.call
+    """
+    Then I see output
+    """
+    Hello World!
+    Exception handled
+    """
+    And I can assure that
+    """
+    @result.state == { exception_handled: true }
+    """
