@@ -488,6 +488,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
       <ul class="sectlevel2"> 
        <li><a href="#_wrapper_can_yield_to_execute_inner_steps">Wrapper can yield to execute inner steps</a></li> 
        <li><a href="#_wrappers_can_be_nested">Wrappers can be nested</a></li> 
+       <li><a href="#_step_type_is_important_when_calling_a_wrapper">step type is important when calling a wrapper</a></li> 
       </ul> </li> 
      <li><a href="#Operation-wrappers"><strong>Operation wrappers</strong></a> 
       <ul class="sectlevel2"> 
@@ -553,7 +554,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
   step ValidateMagazineState
   step :log_start
 
-  wrap WithBenchmark do
+  step WithBenchmark do
     step CreateTemporaryOrder
     step :place_order
   end
@@ -1987,13 +1988,16 @@ end</pre>
      <div class="sidebarblock"> 
       <div class="content"> 
        <div class="paragraph"> 
-        <p>It’s possible to wrap around a group of successive steps with <code>wrap</code>. This is a common use case for surrounding multiple steps in a database transaction and rolling back when steps inside fail.</p> 
+        <p>It’s possible to step around a group of successive steps. This is a common use case for surrounding multiple steps in a database transaction and rolling back when steps inside fail.</p> 
        </div> 
        <div class="paragraph"> 
-        <p>Wrapper interface is the same as for any other step. It requires an object responding to <code>call()</code> or <code>call(state)</code>. The only difference is that it also receives a block.</p> 
+        <p>Steps wrapper is defined as a step (of any type, e.g. <code>step</code> or <code>tee</code>) with callable wrapper-action and additional block defining nested steps.</p> 
        </div> 
        <div class="paragraph"> 
-        <p>Yielding the block calls inner steps. It returns <code>false</code> if any of the inner steps failed or <code>true</code> otherwise.</p> 
+        <p>Wrapper-action is a Callable or method name.</p> 
+       </div> 
+       <div class="paragraph"> 
+        <p>Yielding the block calls inner steps. Yield returns <code>false</code> if any of the inner steps failed or <code>true</code> otherwise.</p> 
        </div> 
        <div class="paragraph"> 
         <p>Example usage:</p> 
@@ -2007,11 +2011,12 @@ end</pre>
       ActiveRecord::Base.transaction do
         success = yield
         raise ActiveRecord::Rollback unless success
+        true
       end
     end
   end
 
-  wrap TransactionWrapper do
+  step TransactionWrapper do
     step :create_new_entity
     step :update_counter
   end
@@ -2049,7 +2054,7 @@ end</code></pre>
     end
   end
 
-  wrap Wrapper do
+  step Wrapper do
     step { print_to_output "Hello " }
     step do |state|
       print_to_output "World!"
@@ -2161,9 +2166,9 @@ Failure!</pre>
     end
   end
 
-  wrap Wrapper.new("first") do
+  step Wrapper.new("first") do
     step { print_to_output "Hello\n" }
-    wrap Wrapper.new("second") do
+    step Wrapper.new("second") do
       step { print_to_output "Hi\n" }
     end
   end
@@ -2208,6 +2213,91 @@ Finishing first</pre>
        </div> 
       </div> 
      </div> 
+     <div class="sect2"> 
+      <h3 id="_step_type_is_important_when_calling_a_wrapper"><a class="anchor" href="#_step_type_is_important_when_calling_a_wrapper"></a>step type is important when calling a wrapper</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Operation
+  class Wrapper
+    def initialize(name)
+      @name = name
+    end
+
+    def call
+      print_to_output "from: #{@name}\n"
+      yield
+    end
+  end
+
+  step do
+    print_to_output "RED ALERT\n"
+    false
+  end
+
+  step Wrapper.new("OK") do
+    step { print_to_output "Hurray!\n" }
+  end
+
+  failure Wrapper.new("FAIL") do
+    failure { print_to_output "Oops!\n" }
+  end
+
+  always Wrapper.new("ALWAYS") do
+    step { print_to_output "We're done!\n" }
+    failure { print_to_output "We're done, but something went wrong!\n" }
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call(variable: true)</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>RED ALERT
+from: FAIL
+Oops!
+from: ALWAYS
+We're done, but something went wrong!</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
     </div> 
    </div> 
    <div class="sect1"> 
@@ -2218,12 +2308,17 @@ Finishing first</pre>
      <div class="sidebarblock"> 
       <div class="content"> 
        <div class="paragraph"> 
-        <p>It is possible to define global wrapper on the Operation level using <code>wrapper</code> call without nested steps block.</p> 
+        <p>It is possible to define global wrappers on the Operation level using <code>around</code> call without nested steps block.</p> 
        </div> 
       </div> 
      </div> 
      <div class="sect2"> 
       <h3 id="_operation_can_have_multiple_global_wrappers"><a class="anchor" href="#_operation_can_have_multiple_global_wrappers"></a>Operation can have multiple global wrappers</h3> 
+      <div class="literalblock"> 
+       <div class="content"> 
+        <pre>Wrappers are called in the order they are defined.</pre> 
+       </div> 
+      </div> 
       <div class="exampleblock"> 
        <div class="content"> 
         <div class="dlist"> 
@@ -2251,8 +2346,8 @@ Finishing first</pre>
     end
   end
 
-  wrap Wrapper.new("1")
-  wrap Wrapper.new("2")
+  around Wrapper.new("1")
+  around Wrapper.new("2")
 
   step { print_to_output "Hello World!\n" }
 end</pre> 
@@ -2386,7 +2481,7 @@ end</pre>
     end
   end
 
-  wrap Wrapper
+  around Wrapper
 
   step { print_to_output "Hello World!\n"; raise "oops!" }
 end</pre> 
@@ -2446,8 +2541,8 @@ Exception handled</pre>
   </div> 
   <div id="footer" style="color:gray;font-size:11px">
     Generated by 
-   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 29, 2019, 12:47:22 AM 
-   <span style="float:right;font-size:11px"> Execution time: 2.684 seconds</span> 
+   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 29, 2019, 11:41:13 PM 
+   <span style="float:right;font-size:11px"> Execution time: 5.471 seconds</span> 
   </div> 
   <style>  
 
