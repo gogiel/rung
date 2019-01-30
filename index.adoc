@@ -1056,8 +1056,8 @@ ifndef::backend-pdf[]
 minmax::Operation-wrappers[]
 endif::[]
 ****
-It is possible to define global wrappers on the Operation level using `around` call
-without nested steps block.
+:!hardbreaks:
+It is possible to define global wrappers on the Operation level using `around` call.
 ****
 
 === Operation can have multiple global wrappers
