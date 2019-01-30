@@ -7,6 +7,7 @@ module Rung
         @operation_instance = operation_instance
         @state = state
         @failed = false
+        @stopped = false
       end
 
       def_delegators :operation_class, :steps_definition, :around_callbacks, :around_each_callbacks
@@ -18,6 +19,14 @@ module Rung
 
       def fail!
         @failed = true
+      end
+
+      def stop!
+        @stopped = true
+      end
+
+      def stopped?
+        @stopped
       end
 
       def success?

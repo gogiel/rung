@@ -5,26 +5,32 @@ module Rung
         @steps_definition ||= []
       end
 
-      def step(action = nil, &block)
-        add_step(action, &block)
+      def step(*args, &block)
+        add_step args, &block
       end
 
-      def tee(action = nil, &block)
-        add_step(action, ignore_result: true, &block)
+      def tee(*args, &block)
+        add_step args, ignore_result: true, &block
       end
 
-      def failure(action = nil, &block)
-        add_step(action, run_on: :failure, ignore_result: true, &block)
+      def failure(*args, &block)
+        add_step args, run_on: :failure, ignore_result: true, &block
       end
 
-      def always(action = nil, &block)
-        add_step(action, run_on: :any, ignore_result: true, &block)
+      def always(*args, &block)
+        add_step args, run_on: :any, ignore_result: true, &block
       end
 
       private
 
-      def add_step(action, options = {}, &block)
-        steps_definition.push(step_from_definition(action, options, &block))
+      def add_step(args, options = {}, &block)
+        action, action_options = extract_action_and_options!(args)
+        steps_definition.push(step_from_definition(action, **options, **action_options, &block))
+      end
+
+      def extract_action_and_options!(args)
+        options = args.last.is_a?(::Hash) ? args.pop : {}
+        [args.first, options]
       end
 
       def step_from_definition(action, options, &block)

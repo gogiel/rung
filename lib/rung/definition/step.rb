@@ -1,11 +1,12 @@
 module Rung
   module Definition
     class Step
-      def initialize(action, from_block: false, run_on: :success, ignore_result: false)
+      def initialize(action, from_block: false, run_on: :success, ignore_result: false, fail_fast: false)
         @action = action
         @from_block = from_block if from_block
         @run_on = run_on
         @ignore_result = ignore_result
+        @fail_fast = fail_fast
       end
 
       attr_reader :action, :from_block
@@ -29,6 +30,10 @@ module Rung
 
       def ignore_result?
         @ignore_result
+      end
+
+      def fail_fast?
+        @fail_fast
       end
     end
   end
