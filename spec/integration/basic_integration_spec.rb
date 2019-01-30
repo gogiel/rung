@@ -124,17 +124,14 @@ describe Rung do
       end
 
       it "provides state for callable objects" do
-        expect(result.state[:class_with_state_argument]).to eq true
         expect(result[:class_with_state_argument]).to eq true
       end
 
       it "provides state for anonymous blocks" do
-        expect(result.state[:anonymous_step]).to eq true
         expect(result[:anonymous_step]).to eq true
       end
 
       it "provides state for test methods" do
-        expect(result.state[:test_method]).to eq true
         expect(result[:test_method]).to eq true
       end
 
@@ -172,15 +169,15 @@ describe Rung do
         end
 
         it "provides state for callable objects" do
-          expect(result.state[:class_with_state_argument]).to eq true
+          expect(result[:class_with_state_argument]).to eq true
         end
 
         it "provides state for anonymous blocks" do
-          expect(result.state[:anonymous_step]).to eq true
+          expect(result[:anonymous_step]).to eq true
         end
 
         it "provides state for test methods" do
-          expect(result.state[:test_method]).to eq true
+          expect(result[:test_method]).to eq true
         end
       end
 
