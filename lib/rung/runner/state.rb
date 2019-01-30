@@ -25,6 +25,8 @@ module Rung
       !success?
     end
 
+    alias failure? fail?
+
     def self.from_run_context(run_context)
       new(run_context.state, run_context.success?, run_context.operation_instance)
     end

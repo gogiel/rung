@@ -76,5 +76,5 @@ State can be used as the operation output as it is accessible in the result obje
     """
     And I can assure that
     """
-    @result.state == { output_text: "Hello World!" }
+    @result.to_h == { output_text: "Hello World!" }
     """

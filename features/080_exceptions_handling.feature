@@ -50,5 +50,5 @@ Feature: Exceptions handling
     """
     And I can assure that
     """
-    @result.state == { exception_handled: true }
+    @result.to_h == { exception_handled: true }
     """

@@ -10,7 +10,6 @@ require 'rung/definition/nested_step'
 require 'rung/definition/operation_dsl'
 require 'rung/definition/steps_dsl'
 
-require 'rung/runner/result'
 require 'rung/runner/run_context'
 require 'rung/runner/call_helper'
 require 'rung/runner/runner'
