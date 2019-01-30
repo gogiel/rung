@@ -454,7 +454,7 @@ And ::
 I can assure that icon:thumbs-up[role="green",title="Passed"]
 ----
 
-@result.state == { output_text: "Hello World!" }
+@result.to_h == { output_text: "Hello World!" }
 
 ----
 ==========
@@ -1189,7 +1189,7 @@ And ::
 I can assure that icon:thumbs-up[role="green",title="Passed"]
 ----
 
-@result.state == { exception_handled: true }
+@result.to_h == { exception_handled: true }
 
 ----
 ==========
@@ -1365,6 +1365,41 @@ I can assure that icon:thumbs-up[role="green",title="Passed"]
 ----
 
 @result.success? == false
+
+----
+==========
+
+[[Misc, Misc]]
+== *Misc*
+
+ifndef::backend-pdf[]
+minmax::Misc[]
+endif::[]
+=== Operation defines .call shorthand class method
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Operation
+  step {|state| state[:test] = 42 + state[:input] }
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result1 = Operation.call(input: 1)
+@result2 = Operation.new.call(input: 1)
+
+----
+And ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result1.to_h == @result2.to_h
 
 ----
 ==========
