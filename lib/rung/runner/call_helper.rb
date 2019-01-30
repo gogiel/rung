@@ -2,14 +2,29 @@ module Rung
   module Runner
     module CallHelper
       class << self
-        def call(action, state, operation_instance, from_block = false, &block)
+        def call(action, state, operation_instance, from_block = false, second_argument = nil, &block)
           raise "Can't pass block when from_block is enabled" if block && from_block
           runnable = to_runnable(action, operation_instance)
+          arity = runnable.arity
 
           if from_block
-            runnable.arity.zero? ? operation_instance.instance_exec(&runnable) : operation_instance.instance_exec(state, &runnable)
+            case arity
+            when 0
+              operation_instance.instance_exec(&runnable)
+            when 1
+              operation_instance.instance_exec(state, &runnable)
+            else
+              operation_instance.instance_exec(state, second_argument, &runnable)
+            end
           else
-            runnable.arity.zero? ? runnable.call(&block) : runnable.call(state, &block)
+            case arity
+            when 0
+              runnable.call(&block)
+            when 1
+              runnable.call(state, &block)
+            else
+              runnable.call(state, second_argument, &block)
+            end
           end
         end
 

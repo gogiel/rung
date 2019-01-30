@@ -1,6 +1,6 @@
 module Rung
   module Definition
-    class AroundCallback
+    class Callback
       def initialize(action = nil, from_block: false)
         @action = action
         @from_block = from_block

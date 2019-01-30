@@ -4,7 +4,7 @@ require 'rung/version'
 require 'rung/error'
 
 require 'rung/definition/step'
-require 'rung/definition/around_callback'
+require 'rung/definition/callback'
 require 'rung/definition/nested_step'
 
 require 'rung/definition/operation_dsl'

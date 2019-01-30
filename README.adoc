@@ -1,3 +1,4 @@
+:!hardbreaks:
 = Rung. This is WIP project! Please do NOT use it!
 
 Rung is service object/business operation/Railway DSL.

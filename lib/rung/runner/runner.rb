@@ -6,20 +6,20 @@ module Rung
       end
 
       extend Forwardable
-      def_delegators :@context, :steps_definition, :callbacks_definition,
-        :operation_instance, :success?, :fail!, :state
+      def_delegators :@context, :steps_definition, :around_callbacks,
+        :operation_instance, :success?, :fail!, :state, :around_each_callbacks
 
       def call
-        run_success = with_callbacks { iterate(steps_definition) }
+        run_success = with_callbacks(around_callbacks) { iterate(steps_definition) }
 
         Result.new(run_success, state)
       end
 
       private
 
-      def with_callbacks(&block)
-        callbacks_definition.reverse.inject(block) do |inner, callback|
-          -> { CallHelper.call(callback.action, step_state, operation_instance, callback.from_block, &inner) }
+      def with_callbacks(callbacks, second_argument: nil, &block)
+        callbacks.reverse.inject(block) do |inner, callback|
+          -> { CallHelper.call(callback.action, step_state, operation_instance, callback.from_block, second_argument, &inner) }
         end.call
       end
 
@@ -32,7 +32,7 @@ module Rung
       def run_step(step)
         return unless step.run?(success?)
 
-        step_success = call_step(step)
+        step_success = with_callbacks(around_each_callbacks, second_argument: step) { call_step(step) }
 
         fail! unless step.ignore_result? || step_success
       end
