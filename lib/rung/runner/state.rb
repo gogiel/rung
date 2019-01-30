@@ -8,6 +8,7 @@ module Rung
 
     def method_missing(method, *args)
       return @state.send(method, *args) if @state.respond_to?(method)
+
       super
     end
 
@@ -28,7 +29,11 @@ module Rung
     alias failure? fail?
 
     def self.from_run_context(run_context)
-      new(run_context.state, run_context.success?, run_context.operation_instance)
+      new(
+        run_context.state,
+        run_context.success?,
+        run_context.operation_instance
+      )
     end
   end
 end

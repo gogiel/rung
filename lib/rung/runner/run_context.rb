@@ -10,7 +10,9 @@ module Rung
         @stopped = false
       end
 
-      def_delegators :operation_class, :steps_definition, :around_callbacks, :around_each_callbacks
+      def_delegators :operation_class,
+                     :steps_definition, :around_callbacks,
+                     :around_each_callbacks
       attr_reader :operation_instance, :state
 
       def operation_class

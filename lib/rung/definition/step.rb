@@ -1,7 +1,9 @@
 module Rung
   module Definition
     class Step
+      # rubocop:disable Metrics/LineLength
       def initialize(action, from_block: false, run_on: :success, ignore_result: false, fail_fast: false)
+        # rubocop:enable Metrics/LineLength
         @action = action
         @from_block = from_block if from_block
         @run_on = run_on

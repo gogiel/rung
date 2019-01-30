@@ -25,7 +25,8 @@ module Rung
 
       def add_step(args, options = {}, &block)
         action, action_options = extract_action_and_options!(args)
-        steps_definition.push(step_from_definition(action, **options, **action_options, &block))
+        step = step_from_definition action, **options, **action_options, &block
+        steps_definition.push step
       end
 
       def extract_action_and_options!(args)
@@ -51,7 +52,8 @@ module Rung
       end
 
       def with_new_steps_definition
-        old_steps_definition, @steps_definition = @steps_definition, []
+        old_steps_definition = @steps_definition
+        @steps_definition = []
         yield
       ensure
         @steps_definition = old_steps_definition

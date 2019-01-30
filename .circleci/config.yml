@@ -8,6 +8,7 @@ jobs:
       - run: bundle install
       - run: bundle exec rspec
       - run: bundle exec cucumber
+      - run: bundle exec rubocop
 
       - run: mkdir workspace
       - run: bundle exec cucumber -f json -o workspace/cucumber.json

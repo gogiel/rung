@@ -1,5 +1,5 @@
 describe Rung do
-  context "with a complex class" do
+  context 'with a complex class' do
     let(:proc_with_one_argument_spy) { spy }
     let(:proc_no_argument_spy) { spy }
 
@@ -100,15 +100,15 @@ describe Rung do
     let(:instance) { test_class.new(method_with_argument_spy, method_no_arguments_spy) }
     subject(:result) { instance.call }
 
-    describe "successful run" do
+    describe 'successful run' do
       before { result }
 
-      it "has a successful result" do
+      it 'has a successful result' do
         expect(result).to be_success
         expect(result).not_to be_failure
       end
 
-      it "calls all the steps in order" do
+      it 'calls all the steps in order' do
         expect(method_with_argument_spy).to have_received(:call).ordered
         expect(class_with_argument_spy).to have_received(:call).ordered
         expect(class_without_argument_spy).to have_received(:call).ordered
@@ -118,20 +118,20 @@ describe Rung do
         expect(proc_no_argument_spy).to have_received(:call).ordered
       end
 
-      it "executed anonymous steps in the instance context" do
-        expect(instance.instance_variable_get "@anonymous_step1").to eq true
-        expect(instance.instance_variable_get "@anonymous_step2").to eq true
+      it 'executed anonymous steps in the instance context' do
+        expect(instance.instance_variable_get('@anonymous_step1')).to eq true
+        expect(instance.instance_variable_get('@anonymous_step2')).to eq true
       end
 
-      it "provides state for callable objects" do
+      it 'provides state for callable objects' do
         expect(result[:class_with_state_argument]).to eq true
       end
 
-      it "provides state for anonymous blocks" do
+      it 'provides state for anonymous blocks' do
         expect(result[:anonymous_step]).to eq true
       end
 
-      it "provides state for test methods" do
+      it 'provides state for test methods' do
         expect(result[:test_method]).to eq true
       end
 
@@ -140,18 +140,18 @@ describe Rung do
       end
     end
 
-    describe "failed run" do
-      context "proc with no argument (last step) failure" do
+    describe 'failed run' do
+      context 'proc with no argument (last step) failure' do
         before do
           allow(proc_no_argument_spy).to receive(:call)
         end
 
-        it "has a failed result" do
+        it 'has a failed result' do
           expect(result).to be_failure
           expect(result).not_to be_success
         end
 
-        it "executed failed and earlier steps" do
+        it 'executed failed and earlier steps' do
           result
           expect(method_with_argument_spy).to have_received(:call).ordered
           expect(class_with_argument_spy).to have_received(:call).ordered
@@ -162,36 +162,36 @@ describe Rung do
           expect(proc_no_argument_spy).to have_received(:call).ordered
         end
 
-        it "executed anonymous steps in the instance context" do
+        it 'executed anonymous steps in the instance context' do
           result
-          expect(instance.instance_variable_get "@anonymous_step1").to eq true
-          expect(instance.instance_variable_get "@anonymous_step2").to eq true
+          expect(instance.instance_variable_get('@anonymous_step1')).to eq true
+          expect(instance.instance_variable_get('@anonymous_step2')).to eq true
         end
 
-        it "provides state for callable objects" do
+        it 'provides state for callable objects' do
           expect(result[:class_with_state_argument]).to eq true
         end
 
-        it "provides state for anonymous blocks" do
+        it 'provides state for anonymous blocks' do
           expect(result[:anonymous_step]).to eq true
         end
 
-        it "provides state for test methods" do
+        it 'provides state for test methods' do
           expect(result[:test_method]).to eq true
         end
       end
 
-      context "proc with one argument failure" do
+      context 'proc with one argument failure' do
         before do
           allow(proc_with_one_argument_spy).to receive(:call)
         end
 
-        it "has a failed result" do
+        it 'has a failed result' do
           expect(result).to be_failure
           expect(result).not_to be_success
         end
 
-        it "executed failed and earlier steps" do
+        it 'executed failed and earlier steps' do
           result
           expect(method_with_argument_spy).to have_received(:call).ordered
           expect(class_with_argument_spy).to have_received(:call).ordered
@@ -203,17 +203,17 @@ describe Rung do
         end
       end
 
-      context "block with no argument failure" do
+      context 'block with no argument failure' do
         before do
           allow(block_no_arguments_spy).to receive(:call)
         end
 
-        it "has a failed result" do
+        it 'has a failed result' do
           expect(result).to be_failure
           expect(result).not_to be_success
         end
 
-        it "executed failed and earlier steps" do
+        it 'executed failed and earlier steps' do
           result
           expect(method_with_argument_spy).to have_received(:call).ordered
           expect(class_with_argument_spy).to have_received(:call).ordered
@@ -225,17 +225,17 @@ describe Rung do
         end
       end
 
-      context "method with no argument failure" do
+      context 'method with no argument failure' do
         before do
           allow(method_no_arguments_spy).to receive(:call)
         end
 
-        it "has a failed result" do
+        it 'has a failed result' do
           expect(result).to be_failure
           expect(result).not_to be_success
         end
 
-        it "executed failed and earlier steps" do
+        it 'executed failed and earlier steps' do
           result
           expect(method_with_argument_spy).to have_received(:call).ordered
           expect(class_with_argument_spy).to have_received(:call).ordered
@@ -247,17 +247,17 @@ describe Rung do
         end
       end
 
-      context "class without argument failure" do
+      context 'class without argument failure' do
         before do
           allow(class_without_argument_spy).to receive(:call)
         end
 
-        it "has a failed result" do
+        it 'has a failed result' do
           expect(result).to be_failure
           expect(result).not_to be_success
         end
 
-        it "executed failed and earlier steps" do
+        it 'executed failed and earlier steps' do
           result
           expect(method_with_argument_spy).to have_received(:call).ordered
           expect(class_with_argument_spy).to have_received(:call).ordered
@@ -269,17 +269,17 @@ describe Rung do
         end
       end
 
-      context "class with state failure" do
+      context 'class with state failure' do
         before do
           allow(class_with_argument_spy).to receive(:call)
         end
 
-        it "has a failed result" do
+        it 'has a failed result' do
           expect(result).to be_failure
           expect(result).not_to be_success
         end
 
-        it "executed failed and earlier steps" do
+        it 'executed failed and earlier steps' do
           result
           expect(method_with_argument_spy).to have_received(:call).ordered
           expect(class_with_argument_spy).to have_received(:call).ordered
@@ -291,17 +291,17 @@ describe Rung do
         end
       end
 
-      context "method with argument failure" do
+      context 'method with argument failure' do
         before do
           allow(method_with_argument_spy).to receive(:call)
         end
 
-        it "has a failed result" do
+        it 'has a failed result' do
           expect(result).to be_failure
           expect(result).not_to be_success
         end
 
-        it "executed failed and earlier steps" do
+        it 'executed failed and earlier steps' do
           result
           expect(method_with_argument_spy).to have_received(:call).ordered
           expect(class_with_argument_spy).not_to have_received(:call).ordered

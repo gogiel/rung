@@ -1,0 +1,11 @@
+AllCops:
+  TargetRubyVersion: 2.3
+  Exclude:
+    - spec/integration/*
+    - rung.gemspec
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false

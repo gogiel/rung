@@ -6,9 +6,10 @@ module Rung
       end
 
       extend Forwardable
-      def_delegators :@context, :steps_definition, :operation_instance,
-        :around_callbacks, :around_each_callbacks,
-        :success?, :stopped?, :fail!, :stop!
+      def_delegators :@context,
+                     :steps_definition, :operation_instance,
+                     :around_callbacks, :around_each_callbacks,
+                     :success?, :stopped?, :fail!, :stop!
 
       def call
         with_callbacks(around_callbacks) { iterate(steps_definition) }
@@ -20,7 +21,10 @@ module Rung
 
       def with_callbacks(callbacks, second_argument: nil, &block)
         callbacks.reverse.inject(block) do |inner, callback|
-          -> { CallHelper.call(callback.action, current_state, operation_instance, callback.from_block, second_argument, &inner) }
+          lambda do
+            CallHelper.call callback.action, current_state, operation_instance,
+                            callback.from_block, second_argument, &inner
+          end
         end.call
       end
 
@@ -34,7 +38,9 @@ module Rung
         return if stopped?
         return unless step.run?(success?)
 
-        step_success = with_callbacks(around_each_callbacks, second_argument: step) { call_step(step) }
+        step_success = with_callbacks(
+          around_each_callbacks, second_argument: step
+        ) { call_step(step) }
 
         handle_failure(step) unless step_success
       end
@@ -44,13 +50,14 @@ module Rung
       end
 
       def call_nested_step(nested)
-        CallHelper.call(nested.action, current_state, operation_instance) do
-          iterate(nested.nested_steps)
+        CallHelper.call nested.action, current_state, operation_instance do
+          iterate nested.nested_steps
         end
       end
 
       def call_simple_step(step)
-        CallHelper.call(step.action, current_state, operation_instance, step.from_block)
+        CallHelper.call step.action, current_state, operation_instance,
+                        step.from_block
       end
 
       def current_state

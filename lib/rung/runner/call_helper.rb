@@ -1,9 +1,11 @@
+# rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/LineLength
 module Rung
   module Runner
     module CallHelper
       class << self
         def call(action, state, operation_instance, from_block = false, second_argument = nil, &block)
           raise "Can't pass block when from_block is enabled" if block && from_block
+
           runnable = to_runnable(action, operation_instance)
           arity = runnable.arity
 
@@ -46,3 +48,4 @@ module Rung
     end
   end
 end
+# rubocop:enable Metrics/ParameterLists, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/LineLength
