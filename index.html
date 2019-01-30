@@ -484,6 +484,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
        <li><a href="#_code_always_code_is_called_when_operation_is_failed"><code>always</code> is called when operation is failed</a></li> 
        <li><a href="#_state_object_provides_information_about_operation_success_with_code_success_code_and_code_fail_code">state object provides information about operation success with <code>success?</code> and <code>fail?</code></a></li> 
       </ul> </li> 
+     <li><a href="#Fail-fast"><strong>Fail fast</strong></a> 
+      <ul class="sectlevel2"> 
+       <li><a href="#_when_step_with_code_fail_fast_code_fails_the_execution_is_immediately_stopped">When step with <code>fail_fast</code> fails the execution is immediately stopped</a></li> 
+       <li><a href="#_any_kind_of_step_can_use_code_fail_fast_code">Any kind of step can use <code>fail_fast</code></a></li> 
+      </ul> </li> 
      <li><a href="#Step-wrappers"><strong>Step wrappers</strong></a> 
       <ul class="sectlevel2"> 
        <li><a href="#_wrapper_can_yield_to_execute_inner_steps">Wrapper can yield to execute inner steps</a></li> 
@@ -1991,6 +1996,169 @@ end</pre>
     </div> 
    </div> 
    <div class="sect1"> 
+    <h2 id="Fail-fast"><a class="anchor" href="#Fail-fast"></a><strong>Fail fast</strong></h2> 
+    <div class="sectionbody"> 
+     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('Fail-fast');document.getElementById('hidden-Fail-fast').style.display = 'inline';this.style.display = 'none'"> </span> 
+     <span id="hidden-Fail-fast" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('Fail-fast');this.style.display = 'none'"> </span> 
+     <div class="sect2"> 
+      <h3 id="_when_step_with_code_fail_fast_code_fails_the_execution_is_immediately_stopped"><a class="anchor" href="#_when_step_with_code_fail_fast_code_fails_the_execution_is_immediately_stopped"></a>When step with <code>fail_fast</code> fails the execution is immediately stopped</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Operation
+  step(fail_fast: true) do
+    print_to_output "Hello"
+    false
+  end
+
+  step do
+    print_to_output " World!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result = Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            And 
+          </dt> 
+          <dd> 
+           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result.failure?</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_any_kind_of_step_can_use_code_fail_fast_code"><a class="anchor" href="#_any_kind_of_step_can_use_code_fail_fast_code"></a>Any kind of step can use <code>fail_fast</code></h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Operation
+  step do
+    print_to_output "Hello"
+    false
+  end
+
+  failure fail_fast: true do
+    print_to_output "...Goodbye!"
+  end
+
+  step do
+    print_to_output " World!"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result = Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello...Goodbye!</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            And 
+          </dt> 
+          <dd> 
+           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result.failure?</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
     <h2 id="Step-wrappers"><a class="anchor" href="#Step-wrappers"></a><strong>Step wrappers</strong></h2> 
     <div class="sectionbody"> 
      <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('Step-wrappers');document.getElementById('hidden-Step-wrappers').style.display = 'inline';this.style.display = 'none'"> </span> 
@@ -2872,8 +3040,8 @@ end</pre>
   </div> 
   <div id="footer" style="color:gray;font-size:11px">
     Generated by 
-   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 30, 2019, 10:41:57 PM 
-   <span style="float:right;font-size:11px"> Execution time: 3.562 seconds</span> 
+   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 30, 2019, 11:30:13 PM 
+   <span style="float:right;font-size:11px"> Execution time: 2.851 seconds</span> 
   </div> 
   <style>  
 

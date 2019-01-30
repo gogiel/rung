@@ -829,6 +829,100 @@ Hello There!
 ----
 ==========
 
+[[Fail-fast, Fail fast]]
+== *Fail fast*
+
+ifndef::backend-pdf[]
+minmax::Fail-fast[]
+endif::[]
+=== When step with `fail_fast` fails the execution is immediately stopped
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Operation
+  step(fail_fast: true) do
+    print_to_output "Hello"
+    false
+  end
+
+  step do
+    print_to_output " World!"
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.new.call
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+Hello
+
+----
+And ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.failure?
+
+----
+==========
+
+=== Any kind of step can use `fail_fast`
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Operation
+  step do
+    print_to_output "Hello"
+    false
+  end
+
+  failure fail_fast: true do
+    print_to_output "...Goodbye!"
+  end
+
+  step do
+    print_to_output " World!"
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.new.call
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+Hello...Goodbye!
+
+----
+And ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.failure?
+
+----
+==========
+
 [[Step-wrappers, Step wrappers]]
 == *Step wrappers*
 
