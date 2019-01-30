@@ -499,6 +499,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
        <li><a href="#_all_exceptions_are_raised">All exceptions are raised</a></li> 
        <li><a href="#_exception_can_be_caught_in_a_wrapper">Exception can be caught in a wrapper</a></li> 
       </ul> </li> 
+     <li><a href="#Around-step-wrapper"><strong>Around step wrapper</strong></a> 
+      <ul class="sectlevel2"> 
+       <li><a href="#_step_wrapper_is_called_for_every_step">Step wrapper is called for every step</a></li> 
+       <li><a href="#_step_wrapper_receives_state_and_current_step">Step wrapper receives state and current step</a></li> 
+       <li><a href="#_step_wrapper_returned_result_is_treated_as_the_step_result">Step wrapper returned result is treated as the step result</a></li> 
+      </ul> </li> 
     </ul> 
    </div> 
   </div> 
@@ -511,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
       <p>Rung is service object/business operation/Railway DSL.</p> 
      </div> 
      <div class="paragraph"> 
-      <p>This is a lightweight, independent alternative to<br> <a href="http://trailblazer.to/gems/operation">Trailblazer Operation</a><br> and<br> <a href="https://github.com/dry-rb/dry-transaction">dry-transaction</a>.</p> 
+      <p>This is a lightweight, independent alternative to <a href="http://trailblazer.to/gems/operation">Trailblazer Operation</a> and <a href="https://github.com/dry-rb/dry-transaction">dry-transaction</a>.</p> 
      </div> 
      <div class="sect2"> 
       <h3 id="_installation"><a class="anchor" href="#_installation"></a>Installation</h3> 
@@ -596,7 +602,7 @@ end</code></pre>
        <p>Docs are available at <a href="https://gogiel.github.io/rung/" class="bare">https://gogiel.github.io/rung/</a>.</p> 
       </div> 
       <div class="paragraph"> 
-       <p>They are generated from Cucumber specifications using<br> <a href="https://github.com/rmpestano/cukedoctor">Cukedoctor</a>.</p> 
+       <p>They are generated from Cucumber specifications using <a href="https://github.com/rmpestano/cukedoctor">Cukedoctor</a>.</p> 
       </div> 
       <div class="paragraph"> 
        <p>Docs can be generated locally using <code>$ rake docker_generate_docs</code>. It requires Docker.</p> 
@@ -605,10 +611,10 @@ end</code></pre>
      <div class="sect2"> 
       <h3 id="_development"><a class="anchor" href="#_development"></a>Development</h3> 
       <div class="paragraph"> 
-       <p>After checking out the repo, run <code>bundle</code> to install dependencies. Then,<br> run <code>rake</code> to run the tests. You can also run <code>bin/console</code> for an<br> interactive prompt that will allow you to experiment.</p> 
+       <p>After checking out the repo, run <code>bundle</code> to install dependencies. Then, run <code>rake</code> to run the tests. You can also run <code>bin/console</code> for an interactive prompt that will allow you to experiment.</p> 
       </div> 
       <div class="paragraph"> 
-       <p>To install this gem onto your local machine, run<br> <code>bundle exec rake install</code>. To release a new version, update the version<br> number in <code>version.rb</code>, and then run <code>bundle exec rake release</code>, which<br> will create a git tag for the version, push git commits and tags, and<br> push the <code>.gem</code> file to <a href="https://rubygems.org">rubygems.org</a>.</p> 
+       <p>To install this gem onto your local machine, run <code>bundle exec rake install</code>. To release a new version, update the version number in <code>version.rb</code>, and then run <code>bundle exec rake release</code>, which will create a git tag for the version, push git commits and tags, and push the <code>.gem</code> file to <a href="https://rubygems.org">rubygems.org</a>.</p> 
       </div> 
      </div> 
      <div class="sect2"> 
@@ -620,7 +626,7 @@ end</code></pre>
      <div class="sect2"> 
       <h3 id="_license"><a class="anchor" href="#_license"></a>License</h3> 
       <div class="paragraph"> 
-       <p>The gem is available as open source under the terms of the<br> <a href="https://opensource.org/licenses/MIT">MIT License</a>.</p> 
+       <p>The gem is available as open source under the terms of the <a href="https://opensource.org/licenses/MIT">MIT License</a>.</p> 
       </div> 
      </div> 
     </div> 
@@ -2538,11 +2544,270 @@ Exception handled</pre>
      </div> 
     </div> 
    </div> 
+   <div class="sect1"> 
+    <h2 id="Around-step-wrapper"><a class="anchor" href="#Around-step-wrapper"></a><strong>Around step wrapper</strong></h2> 
+    <div class="sectionbody"> 
+     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('Around-step-wrapper');document.getElementById('hidden-Around-step-wrapper').style.display = 'inline';this.style.display = 'none'"> </span> 
+     <span id="hidden-Around-step-wrapper" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('Around-step-wrapper');this.style.display = 'none'"> </span> 
+     <div class="sidebarblock"> 
+      <div class="content"> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_step_wrapper_is_called_for_every_step"><a class="anchor" href="#_step_wrapper_is_called_for_every_step"></a>Step wrapper is called for every step</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Operation
+  class Counter
+    def initialize
+      @count = 0
+    end
+
+    def call
+      @count += 1
+      print_to_output "Step #{@count}\n"
+      yield
+    end
+  end
+
+  around_each Counter.new
+
+  step do
+    print_to_output "Hello\n"
+  end
+
+  step do
+    print_to_output "World\n"
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Step 1
+Hello
+Step 2
+World</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_step_wrapper_receives_state_and_current_step"><a class="anchor" href="#_step_wrapper_receives_state_and_current_step"></a>Step wrapper receives state and current step</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Operation
+  class Logger
+    def self.call(state, step)
+      result = yield
+
+      print_to_output "State: #{state.to_h}, success: #{state.success?}," \
+        "ignores result: #{step.ignore_result?}, nested: #{step.nested?}, result: #{result}\n"
+
+      result
+    end
+  end
+
+  noop_wrapper = -&gt; (&amp;block) { block.call }
+
+  around_each Logger
+
+  step do |state|
+    print_to_output "Hello\n"
+    state[:test] = 42
+  end
+
+  step noop_wrapper do
+    tee do |state|
+      state[:test] = 5
+      print_to_output "World\n"
+      true
+    end
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello
+State: {:test=&gt;42}, success: true,ignores result: false, nested: false, result: 42
+World
+State: {:test=&gt;5}, success: true,ignores result: true, nested: false, result: true
+State: {:test=&gt;5}, success: true,ignores result: false, nested: true, result: true</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_step_wrapper_returned_result_is_treated_as_the_step_result"><a class="anchor" href="#_step_wrapper_returned_result_is_treated_as_the_step_result"></a>Step wrapper returned result is treated as the step result</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class Operation &lt; Rung::Operation
+  class Boom
+    def self.call(state)
+      yield
+      print_to_output "Boom!\n"
+      false # always return false
+    end
+  end
+
+  around_each Boom
+
+  tee do |state| # tee step ignores result, so Boom doesn't affect it
+    print_to_output "Hello\n"
+  end
+
+  step { print_to_output "Beautiful\n" }
+  step { print_to_output "World\n" }
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result = Operation.new.call</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I see output <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>Hello
+Boom!
+Beautiful
+Boom!</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            And 
+          </dt> 
+          <dd> 
+           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result.success? == false</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
   </div> 
   <div id="footer" style="color:gray;font-size:11px">
     Generated by 
-   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 30, 2019, 12:03:07 AM 
-   <span style="float:right;font-size:11px"> Execution time: 2.928 seconds</span> 
+   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Jan 30, 2019, 8:10:20 PM 
+   <span style="float:right;font-size:11px"> Execution time: 2.631 seconds</span> 
   </div> 
   <style>  
 
