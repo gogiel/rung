@@ -17,6 +17,8 @@ module Rung
         around_each_callbacks.push callback_from_definition(action, &block)
       end
 
+      private
+
       def callback_from_definition(action, &block)
         if block
           Callback.new block, from_block: true

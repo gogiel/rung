@@ -1,7 +1,7 @@
 module Rung
   module Definition
     class NestedStep < Step
-      def initialize(action, nested_steps, options)
+      def initialize(action, nested_steps, options = {})
         super(action, options)
         @nested_steps = nested_steps
       end

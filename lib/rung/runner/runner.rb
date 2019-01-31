@@ -7,9 +7,9 @@ module Rung
 
       extend Forwardable
       def_delegators :@context,
-                     :steps_definition, :operation_instance,
-                     :around_callbacks, :around_each_callbacks,
-                     :success?, :stopped?, :fail!, :stop!
+        :steps_definition, :operation_instance,
+        :around_callbacks, :around_each_callbacks,
+        :success?, :stopped?, :fail!, :stop!
 
       def call
         with_callbacks(around_callbacks) { iterate(steps_definition) }
@@ -23,7 +23,7 @@ module Rung
         callbacks.reverse.inject(block) do |inner, callback|
           lambda do
             CallHelper.call callback.action, current_state, operation_instance,
-                            callback.from_block, second_argument, &inner
+              callback.from_block, second_argument, &inner
           end
         end.call
       end
@@ -57,7 +57,7 @@ module Rung
 
       def call_simple_step(step)
         CallHelper.call step.action, current_state, operation_instance,
-                        step.from_block
+          step.from_block
       end
 
       def current_state

@@ -5,28 +5,32 @@ module Rung
         @steps_definition ||= []
       end
 
+      def add_generic_step(action, options = {}, &block)
+        step = step_from_definition action, **options, &block
+        steps_definition.push step
+      end
+
       def step(*args, &block)
-        add_step args, &block
+        add_step_from_args args, &block
       end
 
       def tee(*args, &block)
-        add_step args, ignore_result: true, &block
+        add_step_from_args args, ignore_result: true, &block
       end
 
       def failure(*args, &block)
-        add_step args, run_on: :failure, ignore_result: true, &block
+        add_step_from_args args, run_on: :failure, ignore_result: true, &block
       end
 
       def always(*args, &block)
-        add_step args, run_on: :any, ignore_result: true, &block
+        add_step_from_args args, run_on: :any, ignore_result: true, &block
       end
 
       private
 
-      def add_step(args, options = {}, &block)
+      def add_step_from_args(args, options = {}, &block)
         action, action_options = extract_action_and_options!(args)
-        step = step_from_definition action, **options, **action_options, &block
-        steps_definition.push step
+        add_generic_step action, **options, **action_options, &block
       end
 
       def extract_action_and_options!(args)

@@ -2,6 +2,7 @@ require 'forwardable'
 
 require 'rung/version'
 require 'rung/error'
+require 'rung/value_object'
 
 require 'rung/definition/step'
 require 'rung/definition/callback'
