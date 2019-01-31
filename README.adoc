@@ -2,6 +2,7 @@
 = Rung. This is WIP project! Please do NOT use it!
 
 image:https://circleci.com/gh/gogiel/rung/tree/master.svg?style=svg["CircleCI", link="https://circleci.com/gh/gogiel/rung/tree/master"]
+https://codeclimate.com/github/gogiel/rung/maintainability[image:https://api.codeclimate.com/v1/badges/67ff3c0c392c368d0156/maintainability[Maintainability]]
 
 Rung is service object/business operation/Railway DSL.
 
