@@ -1,6 +1,8 @@
 :!hardbreaks:
 = Rung. This is WIP project! Please do NOT use it!
 
+image:https://circleci.com/gh/gogiel/rung/tree/master.svg?style=svg["CircleCI", link="https://circleci.com/gh/gogiel/rung/tree/master"]
+
 Rung is service object/business operation/Railway DSL.
 
 This is a lightweight, independent alternative to

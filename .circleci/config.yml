@@ -6,8 +6,8 @@ jobs:
     steps:
       - checkout
       - run: bundle install
-      - run: bundle exec rspec
-      - run: bundle exec cucumber
+      - run: bundle exec rspec --format progress
+      - run: bundle exec cucumber --format progress
       - run: bundle exec rubocop
 
       - run: mkdir workspace
