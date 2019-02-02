@@ -16,3 +16,7 @@ Metrics/BlockLength:
 
 Layout/AlignParameters:
   EnforcedStyle: with_fixed_indentation
+
+Metrics/LineLength:
+  IgnoredPatterns:
+    - ^\s*it \'
