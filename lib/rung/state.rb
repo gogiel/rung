@@ -1,6 +1,6 @@
 module Rung
   class State
-    include ComparableValueObject
+    include ValueObject
 
     def initialize(state, success, operation)
       @success = success

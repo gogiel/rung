@@ -1,7 +1,7 @@
 module Rung
   module Definition
     class Callback
-      include ComparableValueObject
+      include ValueObject
 
       def initialize(action = nil, from_block: false)
         @action = action

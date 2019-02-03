@@ -1,7 +1,7 @@
 module Rung
   module Definition
     class Step
-      include ComparableValueObject
+      include ValueObject
       # rubocop:disable Metrics/LineLength
       def initialize(action, from_block: false, run_on: :success, ignore_result: false, fail_fast: false)
         # rubocop:enable Metrics/LineLength

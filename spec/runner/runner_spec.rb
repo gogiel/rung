@@ -23,15 +23,13 @@ describe Rung::Runner::Runner do
   before { $execution_trace = [] }
 
   before do
-    # rubocop:disable Style/SymbolProc
     allow(Rung::Runner::CallHelper).to receive(:call).with(
       anything, instance_of(Rung::State), operation_instance, :from_block_param
-    ) { |action| action.call }
-    # rubocop:enable Style/SymbolProc
+    ) { |action, state| action.call(state) }
 
     allow(Rung::Runner::CallHelper).to receive(:call).with(
       anything, instance_of(Rung::State), operation_instance
-    ) { |action, &block| action.call(&block) }
+    ) { |action, state, &block| action.call(state, &block) }
 
     # rubocop:disable Metrics/ParameterLists
     allow(Rung::Runner::CallHelper).to receive(:call).with(
@@ -45,7 +43,7 @@ describe Rung::Runner::Runner do
     allow(Rung::Runner::CallHelper).to receive(:call).with(
       anything, instance_of(Rung::State), operation_instance,
       :callback_from_block_param, nil
-    ) { |action, &block| action.call(&block) }
+    ) { |action, state, &block| action.call(state, &block) }
   end
 
   subject(:result) do
@@ -378,12 +376,32 @@ describe Rung::Runner::Runner do
     end
   end
 
-  # rubocop:disable Metrics/MethodLength, Metrics/ParameterLists
+  describe 'initial state support' do
+    let(:initial_state) { { value: 5 } }
+
+    it 'is used to initialize the state' do
+      operation_class.steps_definition = [
+        generate_step('seconds step', action: proc do |state|
+          state[:value] += 2
+        end)
+      ]
+
+      expect(result).to eq(
+        Rung::State.new(
+          { value: 7 }, true, operation_instance
+        )
+      )
+    end
+  end
+
+  # rubocop:disable Metrics/MethodLength, Metrics/ParameterLists,
+  # rubocop:disable Metrics/AbcSize
   def generate_step(
-    name, result: true, fail_fast: false,
-    run_method: ->(success) { success }, ignore_result: false
+    name, result: true, fail_fast: false, action: nil,
+    run_method: nil, ignore_result: false
   )
-    action = proc do
+    run_method ||= ->(success) { success }
+    action ||= proc do
       $execution_trace << "step #{name}"
       result
     end
@@ -395,14 +413,15 @@ describe Rung::Runner::Runner do
   end
 
   def generate_nested_step(name, nested_steps, result: true, fail_fast: false,
-    run_method: ->(success) { success }, ignore_result: false)
+    run_method: nil, ignore_result: false)
     generate_step(name,
-      result: result, fail_fast: fail_fast, run_method: run_method,
+      result: result, fail_fast: fail_fast,
+      run_method: run_method || ->(success) { success },
       ignore_result: ignore_result).tap do |step|
       allow(step).to receive(:nested?) { true }
       allow(step).to receive(:nested_steps) { nested_steps }
       allow(step).to receive(:action) do
-        lambda do |&block|
+        proc do |&block|
           $execution_trace << "nested step before #{name}"
           block.call
           $execution_trace << "nested step after #{name}"
@@ -420,6 +439,6 @@ describe Rung::Runner::Runner do
       end),
       from_block: :callback_from_block_param)
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/ParameterLists
+  # rubocop:enable Metrics/MethodLength, Metrics/ParameterLists, Metrics/AbcSize
 end
 # rubocop:enable Style/GlobalVars
