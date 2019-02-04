@@ -1,3 +1,4 @@
 tmp
 generated_doc/
 .yardoc
+pkg/
