@@ -61,7 +61,7 @@ module Rung
       end
 
       def current_state
-        State.from_run_context @context
+        @context.to_state
       end
 
       def handle_failure(step)

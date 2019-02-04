@@ -34,6 +34,10 @@ module Rung
       def success?
         !@failed
       end
+
+      def to_state
+        State.new state, success?, operation_instance
+      end
     end
   end
 end
