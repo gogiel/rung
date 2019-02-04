@@ -1,14 +1,20 @@
 module Rung
   module Definition
+    # Callback definition Value object.
     class Callback
       include ValueObject
-
-      def initialize(action = nil, from_block: false)
+      # @param action [#call, Symbol]
+      # @param from_block [Boolean] true when callback is defined using
+      #  a Ruby block
+      def initialize(action, from_block: false)
         @action = action
         @from_block = from_block
       end
 
-      attr_reader :action, :from_block
+      # @return [#call]
+      attr_reader :action
+      # @return [Boolean]
+      attr_reader :from_block
     end
   end
 end

@@ -1,27 +1,56 @@
 module Rung
+  # Namespace wrapping classes and DSL used for defining Operation.
   module Definition
     module StepsDSL
+      # @!attribute steps_definition [r]
+      # @return [Array<Rung::Definition::Step>)]
+      # List of steps definitions
       def steps_definition
         @steps_definition ||= []
       end
 
+      # @param action [#call, Symbol]
+      # @param options [Hash] named params passed to {Rung::Definition::Step}
+      # Generic method of creating a step. Shouldn't be used directly.
+      # Instead use more precise methods like {#step} or {#failure}.
+      #
+      # Requires:
+      # - action or block - simple steps
+      # - both action and block - nested steps
+      #
+      # @example Simple step
+      #  add_generic_step MyStep.new
+      #  add_generic_step { ... }
+      # @example Nested step
+      #  add_generic_step Wrapper do
+      #    add_generic_step :inner_step
+      #  end
+      # @example Step options
+      #  add_generic_step :my_step, fail_fast: true, run_on: :failure
       def add_generic_step(action, options = {}, &block)
         step = step_from_definition action, **options, &block
         steps_definition.push step
       end
 
+      # @see #add_generic_step
       def step(*args, &block)
         add_step_from_args args, &block
       end
 
+      # Defines a step with ignore_result: true
+      # @see #add_generic_step
       def tee(*args, &block)
         add_step_from_args args, ignore_result: true, &block
       end
 
+      # Defines a step with run_on: :failure, ignore_result: true
+      # @see #add_generic_step
       def failure(*args, &block)
         add_step_from_args args, run_on: :failure, ignore_result: true, &block
       end
 
+      # Defines a step with run_on: :any, ignore_result: true
+      # @see #add_generic_step
       def always(*args, &block)
         add_step_from_args args, run_on: :any, ignore_result: true, &block
       end

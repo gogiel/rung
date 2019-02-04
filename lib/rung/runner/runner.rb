@@ -1,6 +1,8 @@
 module Rung
   module Runner
     class Runner
+      # @param operation_instance [Rung::Operation]
+      # @param initial_state [Hash]
       def initialize(operation_instance, initial_state)
         @context = RunContext.new(operation_instance, {}.merge(initial_state))
       end
@@ -11,6 +13,7 @@ module Rung
         :around_callbacks, :around_each_callbacks,
         :success?, :stopped?, :fail!, :stop!
 
+      # @return [Rung::State]
       def call
         with_callbacks(around_callbacks) { iterate(steps_definition) }
 

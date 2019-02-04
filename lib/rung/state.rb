@@ -1,4 +1,10 @@
 module Rung
+  # Execution state.
+  # It acts as a Hash.
+  #
+  # Created when {Rung::Operation} call starts.
+  # Steps can mutate it.
+  # Returned in an unchanged form to the user from the call.
   class State
     include ValueObject
 
@@ -8,12 +14,14 @@ module Rung
       @state = state
     end
 
+    # Internal state Hash methods delegation
     def method_missing(method, *args)
       return @state.send(method, *args) if @state.respond_to?(method)
 
       super
     end
 
+    # Internal state Hash methods delegation
     def respond_to_missing?(method_name, include_private = false)
       @state.respond_to?(method_name, include_private) || super
     end
