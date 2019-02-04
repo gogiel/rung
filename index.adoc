@@ -29,18 +29,27 @@ endif::[]
 :!hardbreaks:
 Operation defines a business process that consists of multiple steps.
 
-For example when in e-commerce application new order is created then +
+For example when in e-commerce application new order is created then
 the system should update state of the warehouse, send an e-mail, create new waybill etc.
 
 To define Operation create a new class based on `Rung::Operation`.
 Inside it you can define steps using Rung DSL.
 Steps definition order is important as they are always executed in order.
 
-Steps can communicate with each other and external world using State. When
-operation is called then new state object is created (see link:#State[State]).
-State is shared between step executions.
+Steps can communicate with each other and the external world using State. When
+operation is called then new state object is created.
+State is shared between step executions and available as a result of operation.
+See link:#State[State chapter] to learn more.
 
-There are multiple ways of defining steps.
+There are multiple ways of defining steps:
+
+* using a block
+* Symbol with a method name
+* using object that responds to `.call`
+
+Each method can be used with a an argument (state) or with no arguments.
+
+TIP: Using block notation is not advised. It's made primarily for debugging.
 ****
 
 === Steps can be defined as a Ruby block
@@ -187,152 +196,6 @@ Hello World!
 ----
 ==========
 
-[[Success-and-failure, Success and failure]]
-== *Success and failure*
-
-ifndef::backend-pdf[]
-minmax::Success-and-failure[]
-endif::[]
-****
-:!hardbreaks:
-Value returned from step call is important. Successful step should
-return truthy value (anything other than `false` or `nil`).
-
-If step returns falsy value (`false` or `nil`) then
-the operation is marked as failed. All next steps are not executed.
-
-Result of the Operation call (`Rung::Runner::Result` object)
-can be either a success or a failure. Result has `success?` and `failure?` methods.
-****
-
-=== When all steps return truthy value the result is a success
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Operation
-  step do
-    # do something...
-    true
-  end
-
-  step :second_step
-
-  def second_step
-    2 + 2
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result = Operation.new.call
-
-----
-Then ::
-I can assure that icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result.success? == true
-
-----
-And ::
-I can assure that icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result.failure? == false
-
-----
-==========
-
-=== When at least one step returns a falsy value then the result is a failure
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Operation
-  step do
-    # do something...
-    true
-  end
-
-  step :second_step
-
-  def second_step
-    nil
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result = Operation.new.call
-
-----
-Then ::
-I can assure that icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result.success? == false
-
-----
-And ::
-I can assure that icon:thumbs-up[role="green",title="Passed"]
-----
-
-@result.failure? == true
-
-----
-==========
-
-=== When a step fails then the next steps are not executed
-
-==========
-Given ::
-definition icon:thumbs-up[role="green",title="Passed"]
-----
-
-class Operation < Rung::Operation
-  step do
-    print_to_output "Hello"
-    true
-  end
-
-  step do
-    # something went wrong, retuning false
-    false
-  end
-
-  step do
-    print_to_output "World"
-  end
-end
-
-----
-When ::
-I run icon:thumbs-up[role="green",title="Passed"]
-----
-
-Operation.new.call
-
-----
-Then ::
-I see output icon:thumbs-up[role="green",title="Passed"]
-----
-
-Hello
-
-----
-==========
-
 [[State, State]]
 == *State*
 
@@ -459,6 +322,173 @@ I can assure that icon:thumbs-up[role="green",title="Passed"]
 ----
 ==========
 
+[[Success-and-failure, Success and failure]]
+== *Success and failure*
+
+ifndef::backend-pdf[]
+minmax::Success-and-failure[]
+endif::[]
+****
+:!hardbreaks:
+Rung gem is based on
+link:https://fsharpforfunandprofit.com/rop/[Railway oriented programming]
+idea. If you are not familiar with this concept I highly recommend
+watching link:https://vimeo.com/113707214[Scott Wlaschin's presentation] first.
+
+Value returned from step call is important. Successful step should
+return truthy value (anything other than `false` or `nil`).
+
+If step returns falsy value (`false` or `nil`) then
+the operation is marked as failed. All next steps are not executed.
+
+Result of the Operation call (`Rung::State` object)
+can be either a success or a failure.
+It can be checked using `State` has `success?` and `fail?`
+(with `failed?`, `failure?` aliases) methods.
+****
+
+=== When all steps return truthy value the result is a success
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Operation
+  step do
+    # do something...
+    true
+  end
+
+  step :second_step
+
+  def second_step
+    2 + 2
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.new.call
+
+----
+Then ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.success? == true
+
+----
+And ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.failure? == false
+
+----
+And ::
+I can assure that `fail?` alias works icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.fail? == false
+
+----
+And ::
+I can assure that `failed?` alias works icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.failed? == false
+
+----
+==========
+
+=== When at least one step returns a falsy value then the result is a failure
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Operation
+  step do
+    # do something...
+    true
+  end
+
+  step :second_step
+
+  def second_step
+    nil
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.new.call
+
+----
+Then ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.success? == false
+
+----
+And ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.failure? == true
+
+----
+==========
+
+=== When a step fails then the next steps are not executed
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class Operation < Rung::Operation
+  step do
+    print_to_output "Hello"
+    true
+  end
+
+  step do
+    # something went wrong, retuning false
+    false
+  end
+
+  step do
+    print_to_output "World"
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+Operation.new.call
+
+----
+Then ::
+I see output icon:thumbs-up[role="green",title="Passed"]
+----
+
+Hello
+
+----
+==========
+
 [[Failure-Step, Failure Step]]
 == *Failure Step*
 
@@ -467,12 +497,12 @@ minmax::Failure-Step[]
 endif::[]
 ****
 :!hardbreaks:
-When operations fails (see link:#Success-and-failure[Success and failure])
-next normal steps are no ignored and not executed.
+When operations fails next normal steps are no ignored and not executed.
 
 There's a way to react to a failure with special failure steps.
 
 Failure steps can be defined similarly to normal steps (as a block, method, or a callable object).
+They are *only* executed when operation has failed.
 ****
 
 === Failure step is executed when operation fails
@@ -491,6 +521,10 @@ class Operation < Rung::Operation
 
   failure do
     print_to_output " Oops!"
+  end
+
+  step do
+    print_to_output "This won't be executed"
   end
 end
 
@@ -835,6 +869,15 @@ Hello There!
 ifndef::backend-pdf[]
 minmax::Fail-fast[]
 endif::[]
+****
+:!hardbreaks:
+When a fail-fast step is executed and the operation is a failure then
+no next step is executed, including `always` and `failure` steps.
+
+It doesn't matter if a failure is caused by the fail-fast step itself or if it
+was caused by any previous step, it behaves the same way.
+****
+
 === When step with `fail_fast` fails the execution is immediately stopped
 
 ==========
@@ -1209,6 +1252,12 @@ Hello World!
 ifndef::backend-pdf[]
 minmax::Exceptions-handling[]
 endif::[]
+****
+Rung doesn't provide any built-in exception handling.
+If you need to catch any exceptions you can implement error catching
+using a wrapper on a desired execution level.
+****
+
 === All exceptions are raised
 
 ==========
