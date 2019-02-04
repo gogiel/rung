@@ -3,18 +3,27 @@ Feature: Operation definition
 :!hardbreaks:
 Operation defines a business process that consists of multiple steps.
 
-For example when in e-commerce application new order is created then +
+For example when in e-commerce application new order is created then
 the system should update state of the warehouse, send an e-mail, create new waybill etc.
 
 To define Operation create a new class based on `Rung::Operation`.
 Inside it you can define steps using Rung DSL.
 Steps definition order is important as they are always executed in order.
 
-Steps can communicate with each other and external world using State. When
-operation is called then new state object is created (see link:#State[State]).
-State is shared between step executions.
+Steps can communicate with each other and the external world using State. When
+operation is called then new state object is created.
+State is shared between step executions and available as a result of operation.
+See link:#State[State chapter] to learn more.
 
-There are multiple ways of defining steps.
+There are multiple ways of defining steps:
+
+* using a block
+* Symbol with a method name
+* using object that responds to `.call`
+
+Each method can be used with a an argument (state) or with no arguments.
+
+TIP: Using block notation is not advised. It's made primarily for debugging.
 
   Scenario: Steps can be defined as a Ruby block
     Given definition

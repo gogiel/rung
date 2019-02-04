@@ -1,5 +1,8 @@
 # order: 80
 Feature: Exceptions handling
+Rung doesn't provide any built-in exception handling.
+If you need to catch any exceptions you can implement error catching
+using a wrapper on a desired execution level.
 
   Scenario: All exceptions are raised
     Given definition

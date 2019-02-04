@@ -1,4 +1,4 @@
-# order: 30
+# order: 20
 Feature: State
 :!hardbreaks:
 State is a Hash object that is shared between step executions.

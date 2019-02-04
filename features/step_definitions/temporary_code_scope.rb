@@ -8,7 +8,7 @@ When('I run') do |content|
   @temporary_scope.instance_eval(content)
 end
 
-Then('I can assure that') do |content|
+Then(/^I can assure that/) do |content|
   expect(@temporary_scope.instance_eval(content)).to eq true
 end
 

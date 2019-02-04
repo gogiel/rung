@@ -1,12 +1,12 @@
 # order: 40
 Feature: Failure Step
 :!hardbreaks:
-When operations fails (see link:#Success-and-failure[Success and failure])
-next normal steps are no ignored and not executed.
+When operations fails next normal steps are no ignored and not executed.
 
 There's a way to react to a failure with special failure steps.
 
 Failure steps can be defined similarly to normal steps (as a block, method, or a callable object).
+They are *only* executed when operation has failed.
 
   Scenario: Failure step is executed when operation fails
     Given definition
@@ -20,6 +20,10 @@ Failure steps can be defined similarly to normal steps (as a block, method, or a
 
       failure do
         print_to_output " Oops!"
+      end
+
+      step do
+        print_to_output "This won't be executed"
       end
     end
     """

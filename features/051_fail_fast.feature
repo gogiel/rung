@@ -1,5 +1,12 @@
 # order: 51
 Feature: Fail fast
+:!hardbreaks:
+When a fail-fast step is executed and the operation is a failure then
+no next step is executed, including `always` and `failure` steps.
+
+It doesn't matter if a failure is caused by the fail-fast step itself or if it
+was caused by any previous step, it behaves the same way.
+
   Scenario: When step with `fail_fast` fails the execution is immediately stopped
     Given definition
     """ruby
