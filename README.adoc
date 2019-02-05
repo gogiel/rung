@@ -82,12 +82,12 @@ end
 
 == Docs
 
-Docs are available at https://gogiel.github.io/rung/.
-
-They are generated from Cucumber specifications using
+Docs: https://gogiel.github.io/rung/ Generated from Cucumber specifications using
 https://github.com/rmpestano/cukedoctor[Cukedoctor].
 
-Docs can be generated locally using `$ rake docker_generate_docs`. It requires Docker.
+YARD docs: https://www.rubydoc.info/github/gogiel/rung.
+
+Cucumber docs can be generated locally using `$ rake docker_generate_docs`. It requires Docker.
 
 == Development
 
