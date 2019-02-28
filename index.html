@@ -489,6 +489,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
        <li><a href="#_when_step_with_code_fail_fast_code_fails_the_execution_is_immediately_stopped">When step with <code>fail_fast</code> fails the execution is immediately stopped</a></li> 
        <li><a href="#_any_kind_of_step_can_use_code_fail_fast_code">Any kind of step can use <code>fail_fast</code></a></li> 
       </ul> </li> 
+     <li><a href="#Nested-operations"><strong>Nested operations</strong></a> 
+      <ul class="sectlevel2"> 
+       <li><a href="#_nested_operation_can_be_executed_using_code_nested_code_helper">Nested Operation can be executed using <code>nested</code> helper</a></li> 
+       <li><a href="#_nested_operation_failure_is_treated_as_a_step_failure">Nested Operation failure is treated as a step failure</a></li> 
+       <li><a href="#_nested_operation_input_and_output_can_be_re_mapped">Nested Operation input and output can be re-mapped</a></li> 
+      </ul> </li> 
      <li><a href="#Step-wrappers"><strong>Step wrappers</strong></a> 
       <ul class="sectlevel2"> 
        <li><a href="#_wrapper_can_yield_to_execute_inner_steps">Wrapper can yield to execute inner steps</a></li> 
@@ -2229,6 +2235,210 @@ end</pre>
     </div> 
    </div> 
    <div class="sect1"> 
+    <h2 id="Nested-operations"><a class="anchor" href="#Nested-operations"></a><strong>Nested operations</strong></h2> 
+    <div class="sectionbody"> 
+     <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('Nested-operations');document.getElementById('hidden-Nested-operations').style.display = 'inline';this.style.display = 'none'"> </span> 
+     <span id="hidden-Nested-operations" class="fa fa-plus-square fa-fw" style="cursor:pointer;float:right;display:none;margin-top:-30px" title="Maximize feature" onclick="showFeatureScenarios('Nested-operations');this.style.display = 'none'"> </span> 
+     <div class="sidebarblock"> 
+      <div class="content"> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_nested_operation_can_be_executed_using_code_nested_code_helper"><a class="anchor" href="#_nested_operation_can_be_executed_using_code_nested_code_helper"></a>Nested Operation can be executed using <code>nested</code> helper</h3> 
+      <div class="literalblock"> 
+       <div class="content"> 
+        <pre>Current state is passed to the nested step.
+Operation output is merged to the caller state.</pre> 
+       </div> 
+      </div> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class InnerOperation &lt; Rung::Operation
+  step do |state|
+    state[:output] = state[:input] + 1
+  end
+end
+
+class Operation &lt; Rung::Operation
+  step nested(InnerOperation)
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result = Operation.call(input: 1)</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result[:output] == 2</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_nested_operation_failure_is_treated_as_a_step_failure"><a class="anchor" href="#_nested_operation_failure_is_treated_as_a_step_failure"></a>Nested Operation failure is treated as a step failure</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class InnerOperation &lt; Rung::Operation
+  step do
+    false # fail
+  end
+end
+
+class Operation &lt; Rung::Operation
+  step nested(InnerOperation)
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result = Operation.call(input: 1)</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result.failure?</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="sect2"> 
+      <h3 id="_nested_operation_input_and_output_can_be_re_mapped"><a class="anchor" href="#_nested_operation_input_and_output_can_be_re_mapped"></a>Nested Operation input and output can be re-mapped</h3> 
+      <div class="exampleblock"> 
+       <div class="content"> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Given 
+          </dt> 
+          <dd> 
+           <p>definition <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>class InnerOperation &lt; Rung::Operation
+  step do |state|
+    state[:output] = state[:input] + 1
+  end
+end
+
+class Operation &lt; Rung::Operation
+  step nested(InnerOperation,
+    input: -&gt;(state) { {input: state[:value] } },
+    output: -&gt;(state) { { calculated: state[:output] } }
+  )
+
+  step do |state|
+    state[:sum] = state[:calculated] + state[:value]
+  end
+end</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            When 
+          </dt> 
+          <dd> 
+           <p>I run <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result = Operation.call(value: 1)</pre> 
+         </div> 
+        </div> 
+        <div class="dlist"> 
+         <dl> 
+          <dt class="hdlist1">
+            Then 
+          </dt> 
+          <dd> 
+           <p>I can assure that <span class="icon green"><i class="fa fa-thumbs-up" title="Passed"></i></span></p> 
+          </dd> 
+         </dl> 
+        </div> 
+        <div class="listingblock"> 
+         <div class="content"> 
+          <pre>@result.to_h == { calculated: 2, value: 1, sum: 3 }</pre> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="sect1"> 
     <h2 id="Step-wrappers"><a class="anchor" href="#Step-wrappers"></a><strong>Step wrappers</strong></h2> 
     <div class="sectionbody"> 
      <span class="fa fa-minus-square fa-fw" style="cursor:pointer;float:right;margin-top:-30px" title="Minimize" onclick="hideFeatureScenarios('Step-wrappers');document.getElementById('hidden-Step-wrappers').style.display = 'inline';this.style.display = 'none'"> </span> 
@@ -3117,8 +3327,8 @@ end</pre>
   </div> 
   <div id="footer" style="color:gray;font-size:11px">
     Generated by 
-   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Feb 28, 2019, 9:23:03 PM 
-   <span style="float:right;font-size:11px"> Execution time: 3.029 seconds</span> 
+   <a href="https://github.com/rmpestano/cukedoctor" target="_blank"> Cukedoctor 1.2.1</a> - Feb 28, 2019, 10:31:13 PM 
+   <span style="float:right;font-size:11px"> Execution time: 3.408 seconds</span> 
   </div> 
   <style>  
 

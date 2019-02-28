@@ -966,6 +966,127 @@ I can assure that icon:thumbs-up[role="green",title="Passed"]
 ----
 ==========
 
+[[Nested-operations, Nested operations]]
+== *Nested operations*
+
+ifndef::backend-pdf[]
+minmax::Nested-operations[]
+endif::[]
+****
+:!hardbreaks:
+****
+
+=== Nested Operation can be executed using `nested` helper
+    Current state is passed to the nested step.
+    Operation output is merged to the caller state.
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class InnerOperation < Rung::Operation
+  step do |state|
+    state[:output] = state[:input] + 1
+  end
+end
+
+class Operation < Rung::Operation
+  step nested(InnerOperation)
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.call(input: 1)
+
+----
+Then ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result[:output] == 2
+
+----
+==========
+
+=== Nested Operation failure is treated as a step failure
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class InnerOperation < Rung::Operation
+  step do
+    false # fail
+  end
+end
+
+class Operation < Rung::Operation
+  step nested(InnerOperation)
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.call(input: 1)
+
+----
+Then ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.failure?
+
+----
+==========
+
+=== Nested Operation input and output can be re-mapped
+
+==========
+Given ::
+definition icon:thumbs-up[role="green",title="Passed"]
+----
+
+class InnerOperation < Rung::Operation
+  step do |state|
+    state[:output] = state[:input] + 1
+  end
+end
+
+class Operation < Rung::Operation
+  step nested(InnerOperation,
+    input: ->(state) { {input: state[:value] } },
+    output: ->(state) { { calculated: state[:output] } }
+  )
+
+  step do |state|
+    state[:sum] = state[:calculated] + state[:value]
+  end
+end
+
+----
+When ::
+I run icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result = Operation.call(value: 1)
+
+----
+Then ::
+I can assure that icon:thumbs-up[role="green",title="Passed"]
+----
+
+@result.to_h == { calculated: 2, value: 1, sum: 3 }
+
+----
+==========
+
 [[Step-wrappers, Step wrappers]]
 == *Step wrappers*
 
