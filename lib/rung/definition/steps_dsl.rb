@@ -55,6 +55,10 @@ module Rung
         add_step_from_args args, run_on: :any, ignore_result: true, &block
       end
 
+      def nested(*args)
+        NestedOperation.new(*args)
+      end
+
       private
 
       def add_step_from_args(args, options = {}, &block)

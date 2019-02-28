@@ -9,9 +9,9 @@ module Rung
     include ValueObject
 
     def initialize(state, success, operation)
+      @state = state
       @success = success
       @operation = operation
-      @state = state
     end
 
     # Internal state Hash methods delegation
@@ -19,6 +19,10 @@ module Rung
       return @state.send(method, *args) if @state.respond_to?(method)
 
       super
+    end
+
+    def data_dup
+      @state.dup
     end
 
     # Internal state Hash methods delegation

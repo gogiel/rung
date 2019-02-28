@@ -1,10 +1,11 @@
 describe Rung::Definition::StepsDSL do
-  describe '#add_generic_step' do
-    test_class = Class.new do
-      include Rung::Definition::StepsDSL
-    end
+  test_class = Class.new do
+    include Rung::Definition::StepsDSL
+  end
 
-    let(:operation) { test_class.new }
+  let(:operation) { test_class.new }
+
+  describe '#add_generic_step' do
     let(:action1) { proc {} }
     let(:action2) { proc {} }
 
@@ -127,5 +128,30 @@ describe Rung::Definition::StepsDSL do
   describe '#always' do
     it_should_behave_like 'step definition',
       step_name: 'always', ignore_result: true, run_on: :any
+  end
+
+  describe '#nested' do
+    let(:inner_operation) { double :inner_operation }
+
+    context 'with one argument' do
+      it 'creates NestedOperation' do
+        nested_operation = operation.nested inner_operation
+        expect(nested_operation)
+          .to eq Rung::Definition::NestedOperation.new(inner_operation)
+      end
+    end
+
+    context 'with options' do
+      let(:input) { double :input }
+      let(:output) { double :output }
+
+      it 'creates NestedOperation' do
+        nested_operation = operation.nested inner_operation,
+          input: input, output: output
+        expect(nested_operation).to eq Rung::Definition::NestedOperation.new(
+          inner_operation, input: input, output: output
+        )
+      end
+    end
   end
 end

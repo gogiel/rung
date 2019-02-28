@@ -7,6 +7,7 @@ require 'rung/value_object'
 require 'rung/definition/step'
 require 'rung/definition/callback'
 require 'rung/definition/nested_step'
+require 'rung/definition/nested_operation'
 
 require 'rung/definition/operation_dsl'
 require 'rung/definition/steps_dsl'
